@@ -125,152 +125,6 @@
             padding-top: 0; /* Changed from var(--header-height) */
         }
         
-        /* Table of Contents Sidebar */
-        .research-toc {
-            width: var(--toc-width);
-            height: calc(100vh - var(--header-height));
-            position: sticky;
-            top: var(--header-height);
-            padding: 30px 20px;
-            border-right: 1px solid var(--border-color);
-            background-color: rgba(15, 20, 30, 0.8);
-            overflow-y: auto;
-            flex-shrink: 0;
-            z-index: 50;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            max-height: 80vh;
-            resize: vertical;
-            overflow-y: auto;
-            will-change: transform;
-            transform: translate3d(0, 0, 0);
-            transition: box-shadow 0.3s ease;
-        }
-        
-        .research-toc.dragging {
-            cursor: grabbing !important;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-            user-select: none;
-        }
-        
-        .research-toc.closed {
-            display: block;
-            width: var(--toc-width);
-            padding: 30px 20px;
-            border-right: 1px solid var(--border-color);
-        }
-        
-        .toggle-sidebar-btn {
-            position: absolute;
-            right: -20px; /* Moved further out */
-            top: 50px; /* More visible position */
-            width: 40px; /* Larger button */
-            height: 40px; /* Larger button */
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 30; /* Higher z-index */
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* More prominent shadow */
-        }
-        
-        .research-toc.closed .toggle-sidebar-btn {
-            transform: rotate(180deg);
-            right: -45px;
-        }
-        
-        .toc-header {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .toc-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        
-        .toc-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 2rem 0;
-        }
-        
-        .toc-list a {
-            display: block;
-            padding: 10px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-        
-        .toc-list a:hover, .toc-list a.active {
-            background-color: var(--accent-light);
-            color: var(--text-color);
-        }
-        
-        .toc-list a.active {
-            border-left: 3px solid var(--accent-color);
-            padding-left: 12px;
-            font-weight: 500;
-        }
-        
-        .toc-footer {
-            border-top: 1px solid var(--border-color);
-            padding-top: 1.5rem;
-            margin-top: auto;
-        }
-        
-        .watch-video-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            transition: background-color 0.2s ease;
-        }
-        
-        .watch-video-btn:hover {
-            background-color: #7923c7;
-        }
-        
-        .document-meta {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .document-meta a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-        
-        .document-meta a:hover {
-            text-decoration: underline;
-        }
-        
         /* Main Content */
         .research-content {
             flex: 1;
@@ -929,16 +783,6 @@
                 flex-direction: column;
             }
             
-            .research-toc {
-                position: relative;
-                top: 0;
-                width: 100%;
-                height: auto;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                padding: 20px;
-            }
-            
             .research-content {
                 padding: 20px;
             }
@@ -1016,11 +860,182 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
             cursor: pointer;
-            transition: color 0.2s ease;
         }
         
         .close-toc:hover {
             color: var(--accent-color);
+        }
+        
+        /* Drag Resize Div Styles */
+        .drag-resize-div {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            width: var(--toc-width);
+            height: 300px;
+            background-color: rgba(15, 20, 30, 0.85);
+            border: 1px solid var(--accent-light);
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            z-index: 9999; /* Highest z-index */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .drag-resize-div.fixed {
+            position: fixed;
+        }
+        
+        .drag-resize-div.dragging {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            opacity: 0.9;
+        }
+        
+        .drag-header {
+            padding: 15px 20px;
+            margin-bottom: 0;
+            background-color: rgba(10, 15, 25, 0.95);
+            border-bottom: 1px solid var(--accent-light);
+            cursor: move; /* Only show move cursor on the header */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drag-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .position-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .toggle-label {
+            min-width: 60px;
+            text-align: left;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            color: var(--accent-color);
+        }
+        
+        .drag-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            color: var(--text-secondary);
+        }
+        
+        .drag-content p {
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .resize-handle {
+            width: 100%;
+            height: 10px;
+            cursor: ns-resize;
+            position: relative;
+            background-color: transparent;
+        }
+        
+        .resize-handle:hover {
+            background-color: rgba(138, 43, 226, 0.2);
+        }
+        
+        /* Additional styles for the content */
+        .quick-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        
+        .quick-nav-list a {
+            display: block;
+            padding: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .quick-nav-list a:hover {
+            background-color: var(--accent-light);
+            color: var(--text-color);
+        }
+        
+        .quick-links h4 {
+            margin: 0 0 1rem;
+            font-size: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .quick-link-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(20, 25, 35, 0.9);
+            color: var(--text-color);
+            border: 1px solid var(--accent-light);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-link-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .quick-link-btn i {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+        
+        .quick-link-btn:hover i {
+            color: white;
+        }
+        
+        .quick-nav-list a.active {
+            background-color: var(--accent-light);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 12px;
+            color: var(--text-color);
+            font-weight: 500;
         }
     </style>
 </head>
@@ -1031,23 +1046,7 @@
         <div class="shading-element"></div>
     </div>
     
-    <nav class="top-nav">
-        <a href="videos.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Archives
-        </a>
-        <div class="nav-center">
-            <div class="breadcrumbs">
-                <a href="index.html">Home</a> /
-                <a href="videos.html">Archives</a> /
-                <span>Research Document</span>
-            </div>
-        </div>
-        <div class="nav-right">
-            <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
-            <button id="font-size-toggle"><i class="fas fa-text-height"></i></button>
-            <button id="share-button"><i class="fas fa-share-alt"></i></button>
-        </div>
-    </nav>
+    <nav class="top-spacer"></nav>
 
     <!-- Add video section that shows by default -->
     <div class="video-section" id="videoSection">
@@ -1057,41 +1056,6 @@
     </div>
 
     <div class="research-container">
-        <!-- Add resize handle for the TOC sidebar -->
-        <div id="resizeHandle" class="sidebar-resize-handle">
-            <div class="resize-handle-bar"></div>
-        </div>
-        
-        <!-- Change to have closed class by default -->
-        <aside class="research-toc" id="researchToc">
-            <div class="toc-header" id="tocDragHandle">
-                <h3>Contents</h3>
-                <button class="close-toc" id="closeToc"><i class="fas fa-times"></i></button>
-            </div>
-            <ul class="toc-list">
-                <li><a href="#abstract" class="active">Abstract</a></li>
-                <li><a href="#introduction">Introduction</a></li>
-                <li><a href="#methodology">Methodology</a></li>
-                <li><a href="#findings">Key Findings</a></li>
-                <li><a href="#analysis">Data Analysis</a></li>
-                <li><a href="#applications">Applications</a></li>
-                <li><a href="#resources">Resources</a></li>
-                <li><a href="#references">References</a></li>
-            </ul>
-            
-            <div class="toc-footer">
-                <button class="watch-video-btn" id="openVideoBtn">
-                    <i class="fas fa-play-circle"></i> Watch Video Presentation
-                </button>
-                <div class="document-meta">
-                    <div><i class="far fa-clock"></i> 18 min read</div>
-                    <div><i class="far fa-calendar-alt"></i> Jun 12, 2023</div>
-                    <div><i class="fas fa-download"></i> <a href="#">Download PDF</a></div>
-                </div>
-            </div>
-            <div class="height-resize-handle" id="heightResizeHandle"></div>
-        </aside>
-        
         <main class="research-content expanded">
             <header class="research-header">
                 <div class="research-category">Dimensional Theory • Beginner Level</div>
@@ -1418,172 +1382,51 @@
         </div>
     </div>
 
-    <!-- JavaScript for the page functionality -->
+    <!-- Add the draggable div after the main content -->
+    <div id="dragResizeDiv" class="drag-resize-div">
+        <div class="drag-header" id="dragDivHeader">
+            <h3>Quick Navigation</h3>
+            <div class="controls">
+                <label class="position-toggle">
+                    <input type="checkbox" id="positionToggle" checked>
+                    <span class="toggle-label">Absolute</span>
+                </label>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="drag-content">
+            <ul class="quick-nav-list">
+                <li><a href="#abstract">Abstract</a></li>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#findings">Key Findings</a></li>
+                <li><a href="#analysis">Data Analysis</a></li>
+                <li><a href="#applications">Applications</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#references">References</a></li>
+            </ul>
+            
+            <div class="quick-links">
+                <h4>Quick Links</h4>
+                <button class="quick-link-btn">
+                    <i class="fas fa-play-circle"></i> Watch Video
+                </button>
+                <button class="quick-link-btn">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+                <button class="quick-link-btn">
+                    <i class="fas fa-share-alt"></i> Share Document
+                </button>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- Add script for draggable div functionality -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Variables
-            const tocLinks = document.querySelectorAll('.toc-list a');
-            const sections = document.querySelectorAll('.research-section');
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const fontSizeBtn = document.getElementById('font-size-toggle');
-            const shareBtn = document.getElementById('share-button');
-            const researchToc = document.getElementById('researchToc');
-            const tocDragHandle = document.getElementById('tocDragHandle');
-            const heightResizeHandle = document.getElementById('heightResizeHandle');
-            const closeTocBtn = document.getElementById('closeToc');
             const videoThumbnail = document.querySelector('.video-thumbnail');
-            const watchVideoBtn = document.querySelector('.watch-video-btn');
-            
-            // Make TOC draggable - improved implementation
-            let isDragging = false;
-            let initialX;
-            let initialY;
-            let xOffset = 0;
-            let yOffset = 0;
-            
-            // Open video modal
-            function openVideoModal() {
-                modalContainer.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // If the iframe hasn't been loaded yet, load it now
-                const videoPlayer = document.querySelector('.modal-video-player');
-                if (!videoPlayer.querySelector('iframe')) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
-                    iframe.frameBorder = "0";
-                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                    iframe.allowFullscreen = true;
-                    videoPlayer.appendChild(iframe);
-                }
-            }
-            
-            // Close video modal
-            function closeVideoModal() {
-                modalContainer.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-            
-            // Event listeners for video
-            if (videoThumbnail) {
-                videoThumbnail.addEventListener('click', openVideoModal);
-            }
-            
-            if (watchVideoBtn) {
-                watchVideoBtn.addEventListener('click', openVideoModal);
-            }
-            
-            if (closeModalBtn) {
-                closeModalBtn.addEventListener('click', closeVideoModal);
-            }
-            
-            // Click outside to close
-            modalContainer.addEventListener('click', function(e) {
-                if (e.target === modalContainer) {
-                    closeVideoModal();
-                }
-            });
-            
-            function setTranslate(xPos, yPos, el) {
-                // Get viewport dimensions accounting for scroll
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                const rect = el.getBoundingClientRect();
-                
-                // Calculate boundaries to keep menu fully visible
-                const rightBoundary = viewportWidth - rect.width - 20;
-                const bottomBoundary = viewportHeight - rect.height - 20;
-                
-                // Constrain positions to keep menu in viewport
-                xPos = Math.max(20, Math.min(xPos, rightBoundary));
-                yPos = Math.max(80, Math.min(yPos, bottomBoundary)); // Keep below top nav
-                
-                // Apply transform directly for smoother performance
-                el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
-            }
-            
-            // Add event listeners for dragging
-            tocDragHandle.addEventListener("touchstart", dragStart, { passive: false });
-            document.addEventListener("touchend", dragEnd);
-            document.addEventListener("touchmove", drag, { passive: false });
-            
-            tocDragHandle.addEventListener("mousedown", dragStart);
-            document.addEventListener("mouseup", dragEnd);
-            document.addEventListener("mousemove", drag);
-            
-            // Handle window resize - keep menu in viewport
-            window.addEventListener('resize', function() {
-                // Recalculate position to make sure TOC stays in viewport
-                setTranslate(xOffset, yOffset, researchToc);
-            });
-            
-            // Height resizing with improved mouse handling
-            let isResizingHeight = false;
-            let initialHeight, initialMouseY;
-            
-            heightResizeHandle.addEventListener('mousedown', function(e) {
-                isResizingHeight = true;
-                initialHeight = researchToc.offsetHeight;
-                initialMouseY = e.clientY;
-                document.body.style.cursor = 'ns-resize';
-                researchToc.classList.add('dragging');
-                e.preventDefault();
-            });
-            
-            document.addEventListener('mousemove', function(e) {
-                if (!isResizingHeight) return;
-                
-                // Use requestAnimationFrame for smoother resizing
-                requestAnimationFrame(() => {
-                    const deltaY = e.clientY - initialMouseY;
-                    const newHeight = initialHeight + deltaY;
-                    
-                    // Set min and max height
-                    if (newHeight >= 200 && newHeight <= window.innerHeight * 0.8) {
-                        researchToc.style.height = newHeight + 'px';
-                        
-                        // Ensure it stays in viewport after resize
-                        setTranslate(xOffset, yOffset, researchToc);
-                    }
-                });
-            });
-            
-            document.addEventListener('mouseup', function() {
-                if (isResizingHeight) {
-                    isResizingHeight = false;
-                    document.body.style.cursor = '';
-                    researchToc.classList.remove('dragging');
-                }
-            });
-            
-            // Handle closing/showing TOC
-            closeTocBtn.addEventListener('click', function() {
-                researchToc.style.display = 'none';
-                
-                // Add a button to show TOC again
-                const showTocBtn = document.createElement('button');
-                showTocBtn.id = 'showTocBtn';
-                showTocBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                showTocBtn.style.position = 'fixed';
-                showTocBtn.style.top = '80px';
-                showTocBtn.style.right = '20px';
-                showTocBtn.style.zIndex = '100';
-                showTocBtn.style.background = 'var(--accent-color)';
-                showTocBtn.style.color = 'white';
-                showTocBtn.style.border = 'none';
-                showTocBtn.style.borderRadius = '50%';
-                showTocBtn.style.width = '40px';
-                showTocBtn.style.height = '40px';
-                showTocBtn.style.cursor = 'pointer';
-                showTocBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
-                
-                document.body.appendChild(showTocBtn);
-                
-                showTocBtn.addEventListener('click', function() {
-                    researchToc.style.display = 'block';
-                    document.body.removeChild(showTocBtn);
-                });
-            });
             
             // Video functionality
             if (videoThumbnail) {
@@ -1591,15 +1434,102 @@
                     document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
                 });
             }
+        });
+
+        // Draggable, resizable div functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dragDiv = document.getElementById('dragResizeDiv');
+            const dragHeader = dragDiv.querySelector('.drag-header');
+            const resizeHandle = dragDiv.querySelector('.resize-handle');
+            const closeBtn = dragDiv.querySelector('.close-btn');
+            const positionToggle = document.getElementById('positionToggle');
+            const toggleLabel = dragDiv.querySelector('.toggle-label');
             
+            // Get quick link buttons
+            const quickLinkButtons = dragDiv.querySelectorAll('.quick-link-btn');
+            const watchVideoBtn = quickLinkButtons[0];
+            const downloadPdfBtn = quickLinkButtons[1];
+            const shareDocBtn = quickLinkButtons[2];
+            
+            // Get quick nav links
+            const quickNavLinks = dragDiv.querySelectorAll('.quick-nav-list a');
+            
+            // Add event listeners to quick nav links (smooth scrolling)
+            quickNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Highlight current section in nav
+                        quickNavLinks.forEach(navLink => {
+                            navLink.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // Add event listeners to quick action buttons
             if (watchVideoBtn) {
                 watchVideoBtn.addEventListener('click', function() {
-                    document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
+                    // Open video section or modal
+                    const videoSection = document.getElementById('videoSection');
+                    if (videoSection) {
+                        videoSection.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        // Try to open video modal if exists
+                        const modalContainer = document.getElementById('videoModal');
+                        if (modalContainer) {
+                            modalContainer.classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
                 });
             }
             
-            // Table of Contents highlighting
-            function highlightTOC() {
+            if (downloadPdfBtn) {
+                downloadPdfBtn.addEventListener('click', function() {
+                    // Simulate PDF download (in a real app, this would link to actual PDF)
+                    alert('PDF download would start here.');
+                    // Alternative: window.open('path/to/document.pdf', '_blank');
+                });
+            }
+            
+            if (shareDocBtn) {
+                shareDocBtn.addEventListener('click', function() {
+                    // Use Web Share API if available
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'Understanding the Basics of Dimensional Travel',
+                            text: 'Check out this research on dimensional travel',
+                            url: window.location.href
+                        })
+                        .catch(error => console.log('Error sharing:', error));
+                    } else {
+                        // Fallback - copy URL to clipboard
+                        const tempInput = document.createElement('input');
+                        document.body.appendChild(tempInput);
+                        tempInput.value = window.location.href;
+                        tempInput.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempInput);
+                        
+                        alert('URL copied to clipboard!');
+                    }
+                });
+            }
+            
+            // Update quick nav active state on scroll
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('.research-section');
                 let currentSection = '';
                 
                 sections.forEach(section => {
@@ -1613,34 +1543,239 @@
                     }
                 });
                 
-                tocLinks.forEach(link => {
+                quickNavLinks.forEach(link => {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === '#' + currentSection) {
                         link.classList.add('active');
                     }
                 });
-            }
-            
-            // Smooth scroll for TOC links
-            tocLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    const targetSection = document.querySelector(targetId);
-                    
-                    window.scrollTo({
-                        top: targetSection.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                });
             });
             
-            // Listen for scroll to highlight TOC
-            window.addEventListener('scroll', highlightTOC);
+            let isDragging = false;
+            let isResizing = false;
+            let initialX, initialY, initialMouseX, initialMouseY, initialHeight;
             
-            // Initial highlight
-            highlightTOC();
+            // Set position mode based on checkbox
+            positionToggle.addEventListener('change', function() {
+                // Get current position regardless of positioning method
+                const rect = dragDiv.getBoundingClientRect();
+                
+                if (this.checked) {
+                    // Switching to absolute
+                    dragDiv.classList.remove('fixed');
+                    toggleLabel.textContent = 'Absolute';
+                    
+                    // Calculate the absolute position (account for scroll)
+                    const absoluteTop = rect.top + window.scrollY;
+                    const absoluteLeft = rect.left + window.scrollX;
+                    
+                    // Set the absolute position
+                    dragDiv.style.top = absoluteTop + 'px';
+                    dragDiv.style.left = absoluteLeft + 'px';
+                } else {
+                    // Switching to fixed
+                    dragDiv.classList.add('fixed');
+                    toggleLabel.textContent = 'Fixed';
+                    
+                    // Keep the same visual position, but as fixed coordinates
+                    dragDiv.style.top = rect.top + 'px';
+                    dragDiv.style.left = rect.left + 'px';
+                }
+            });
+            
+            // Update the dragging functionality
+            // Add event listener to the entire div for dragging
+            dragDiv.addEventListener('mousedown', function(e) {
+                // Prevent dragging when clicking controls
+                if (e.target.closest('.controls') || e.target.closest('.resize-handle')) return;
+                
+                isDragging = true;
+                initialX = dragDiv.offsetLeft;
+                initialY = dragDiv.offsetTop;
+                initialMouseX = e.clientX;
+                initialMouseY = e.clientY;
+                
+                dragDiv.classList.add('dragging');
+                e.preventDefault();
+            });
+            
+            // Remove the mousedown event from the header since it's handled by the div
+            // But keep the touch event for mobile
+            dragHeader.removeEventListener('mousedown', dragHeader._mouseDownHandler);
+            
+            // Touch events for mobile support
+            dragDiv.addEventListener('touchstart', function(e) {
+                if (e.target.closest('.controls') || e.target.closest('.resize-handle')) return;
+                
+                const touch = e.touches[0];
+                isDragging = true;
+                initialX = dragDiv.offsetLeft;
+                initialY = dragDiv.offsetTop;
+                initialMouseX = touch.clientX;
+                initialMouseY = touch.clientY;
+                
+                dragDiv.classList.add('dragging');
+                e.preventDefault();
+            }, { passive: false });
+            
+            // Resizing functionality
+            resizeHandle.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                initialHeight = dragDiv.offsetHeight;
+                initialMouseY = e.clientY;
+                
+                dragDiv.classList.add('dragging');
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    const dx = e.clientX - initialMouseX;
+                    const dy = e.clientY - initialMouseY;
+                    
+                    // Calculate new position without constraints
+                    const newLeft = initialX + dx;
+                    const newTop = initialY + dy;
+                    
+                    // Apply new position without any boundaries
+                    dragDiv.style.left = newLeft + 'px';
+                    dragDiv.style.top = newTop + 'px';
+                }
+                
+                if (isResizing) {
+                    const dy = e.clientY - initialMouseY;
+                    const newHeight = initialHeight + dy;
+                    
+                    // Minimum height only
+                    if (newHeight >= 100) {
+                        dragDiv.style.height = newHeight + 'px';
+                    }
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging || isResizing) {
+                    isDragging = false;
+                    isResizing = false;
+                    dragDiv.classList.remove('dragging');
+                }
+            });
+            
+            // Close button functionality - updated to make position fixed when reopened
+            closeBtn.addEventListener('click', function() {
+                // Store current position and scroll before hiding
+                const rect = dragDiv.getBoundingClientRect();
+                const wasFixed = dragDiv.classList.contains('fixed');
+                
+                dragDiv.style.display = 'none';
+                
+                // Create a button to show the div again
+                const showBtn = document.createElement('button');
+                showBtn.id = 'showDragDiv';
+                showBtn.innerHTML = '<i class="fas fa-sticky-note"></i>';
+                showBtn.style.position = 'fixed';
+                showBtn.style.bottom = '20px';
+                showBtn.style.right = '20px';
+                showBtn.style.width = '40px';
+                showBtn.style.height = '40px';
+                showBtn.style.backgroundColor = 'var(--accent-color)';
+                showBtn.style.color = 'white';
+                showBtn.style.border = 'none';
+                showBtn.style.borderRadius = '50%';
+                showBtn.style.cursor = 'pointer';
+                showBtn.style.zIndex = '9999'; // Match the high z-index
+                showBtn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)';
+                showBtn.style.display = 'flex';
+                showBtn.style.alignItems = 'center';
+                showBtn.style.justifyContent = 'center';
+                
+                // Store position info as dataset attributes
+                showBtn.dataset.wasFixed = wasFixed;
+                showBtn.dataset.rectTop = rect.top;
+                showBtn.dataset.rectLeft = rect.left;
+                
+                document.body.appendChild(showBtn);
+                
+                showBtn.addEventListener('click', function() {
+                    // Make position fixed when reopening
+                    dragDiv.classList.add('fixed');
+                    positionToggle.checked = false;
+                    toggleLabel.textContent = 'Fixed';
+                    
+                    // Restore position from dataset
+                    dragDiv.style.top = this.dataset.rectTop + 'px';
+                    dragDiv.style.left = this.dataset.rectLeft + 'px';
+                    
+                    dragDiv.style.display = 'flex';
+                    this.remove();
+                });
+            });
+
+            // Touch events for mobile support
+            dragDiv.addEventListener('touchstart', function(e) {
+                if (e.target.closest('.controls') || e.target.closest('.resize-handle')) return;
+                
+                const touch = e.touches[0];
+                isDragging = true;
+                initialX = dragDiv.offsetLeft;
+                initialY = dragDiv.offsetTop;
+                initialMouseX = touch.clientX;
+                initialMouseY = touch.clientY;
+                
+                dragDiv.classList.add('dragging');
+                e.preventDefault();
+            }, { passive: false });
+
+            // Add back the resize touch handler
+            resizeHandle.addEventListener('touchstart', function(e) {
+                const touch = e.touches[0];
+                isResizing = true;
+                initialHeight = dragDiv.offsetHeight;
+                initialMouseY = touch.clientY;
+                
+                dragDiv.classList.add('dragging');
+                e.preventDefault();
+            }, { passive: false });
+
+            // Add back touchmove
+            document.addEventListener('touchmove', function(e) {
+                if (!isDragging && !isResizing) return;
+                
+                const touch = e.touches[0];
+                
+                if (isDragging) {
+                    const dx = touch.clientX - initialMouseX;
+                    const dy = touch.clientY - initialMouseY;
+                    
+                    // Calculate new position without constraints
+                    const newLeft = initialX + dx;
+                    const newTop = initialY + dy;
+                    
+                    // Apply new position without any boundaries
+                    dragDiv.style.left = newLeft + 'px';
+                    dragDiv.style.top = newTop + 'px';
+                }
+                
+                if (isResizing) {
+                    const dy = touch.clientY - initialMouseY;
+                    const newHeight = initialHeight + dy;
+                    
+                    if (newHeight >= 100) {
+                        dragDiv.style.height = newHeight + 'px';
+                    }
+                }
+                
+                e.preventDefault();
+            }, { passive: false });
+
+            // Add back touchend
+            document.addEventListener('touchend', function() {
+                if (isDragging || isResizing) {
+                    isDragging = false;
+                    isResizing = false;
+                    dragDiv.classList.remove('dragging');
+                }
+            });
         });
     </script>
 </body>
