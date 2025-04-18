@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books - The Hidden Realm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 100px 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-shading-container">
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+    </div>
+    
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Main
+    </a>
+    
+    <section class="hero-section">
+        <h1 class="title reveal-text">Book Collection</h1>
+        <p class="subtitle fade-in">Coming soon...</p>
+    </section>
+    
+    <script src="script.js"></script>
+</body>
+</html> 

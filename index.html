@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hidden Realm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="description" content="Explore the hidden dimensions of reality in this interactive experience.">
+</head>
+<body>
+    <div class="dynamic-shading-container">
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+    </div>
+    <div class="container">
+        <header>
+            <h1 class="title reveal-text">The Hidden Realm</h1>
+            <p class="subtitle fade-in">Discover what lies beneath the surface</p>
+            <div class="nav-container">
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#portals" class="nav-link">Portals</a></li>
+                        <li><a href="#dimensions" class="nav-link">Dimensions</a></li>
+                        <li><a href="#secrets" class="nav-link">Secrets</a></li>
+                        <li><a href="#cryptex" class="nav-link">Cryptex</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        
+        <section id="intro" class="intro-section">
+            <div class="intro-text">
+                <p>Welcome to a world where nothing is as it seems. This site contains <span class="highlight-text">7 hidden secrets</span>, can you find them all?</p>
+                <p>Some elements appear only when certain conditions are met. Watch for subtle changes as you explore.</p>
+                <div class="secret-counter">
+                    <span>Secrets found: </span>
+                    <span class="counter">0</span><span>/7</span>
+                </div>
+            </div>
+        </section>
+        
+        <section id="portals" class="portal-section">
+            <h2 class="section-title">Dimensional Portals</h2>
+            <div class="portal">
+                <div class="portal-inner"></div>
+            </div>
+            <button class="teleport-btn">Teleport <i class="fas fa-bolt"></i></button>
+            <div class="portal-info">
+                <p>Every portal leads to a different dimension. Some dimensions are accessible only through specific means.</p>
+                <p class="hint"><i class="fas fa-info-circle"></i> <span>Hint: Try clicking different parts of the portal</span></p>
+            </div>
+        </section>
+
+        <div class="hidden-content">
+            <div class="secret-panel">
+                <h2>Secret Message</h2>
+                <p class="secret-text">You've discovered the hidden realm! This place exists between dimensions.</p>
+                <div class="clue">
+                    <p>Find the three hidden elements on this page to unlock the final secret.</p>
+                    <div class="secret-code">
+                        <span class="code-part">R</span>
+                        <span class="code-part">G</span>
+                        <span class="code-part">B</span>
+                    </div>
+                </div>
+                <div class="color-mixer">
+                    <div class="color-slider">
+                        <label for="red">R</label>
+                        <input type="range" id="red" min="0" max="255" value="88">
+                        <span class="color-value">88</span>
+                    </div>
+                    <div class="color-slider">
+                        <label for="green">G</label>
+                        <input type="range" id="green" min="0" max="255" value="166">
+                        <span class="color-value">166</span>
+                    </div>
+                    <div class="color-slider">
+                        <label for="blue">B</label>
+                        <input type="range" id="blue" min="0" max="255" value="255">
+                        <span class="color-value">255</span>
+                    </div>
+                    <div class="color-preview"></div>
+                </div>
+                <button class="return-btn">Return <i class="fas fa-undo"></i></button>
+            </div>
+        </div>
+
+        <section id="dimensions" class="main-content">
+            <h2 class="section-title">Parallel Dimensions</h2>
+            <a href="videos.html" class="card-link">
+                <div class="card fade-in-card">
+                    <h2>Invisible Paths</h2>
+                    <p>Some doors remain hidden until you know where to look. Hover around to reveal the unseen.</p>
+                    <div class="color-theory">
+                        <div class="color-circle" style="background-color: #ff0000;"></div>
+                        <div class="color-info">Primary: Red (RGB: 255,0,0)</div>
+                    </div>
+                    <div class="hidden-icon" data-id="1"><i class="fas fa-eye"></i></div>
+                </div>
+            </a>
+
+            <a href="books.html" class="card-link">
+                <div class="card fade-in-card">
+                    <h2>Dimensional Shifts</h2>
+                    <p>Reality is not as solid as it seems. Click on elements to see them transform.</p>
+                    <div class="color-theory">
+                        <div class="color-circle" style="background-color: #00ff00;"></div>
+                        <div class="color-info">Primary: Green (RGB: 0,255,0)</div>
+                    </div>
+                    <div class="hidden-icon" data-id="2"><i class="fas fa-key"></i></div>
+                </div>
+            </a>
+
+            <a href="research.html" class="card-link">
+                <div class="card fade-in-card">
+                    <h2>Quantum Secrets</h2>
+                    <p>Information can exist in multiple states simultaneously. Try different interactions to reveal all possibilities.</p>
+                    <div class="color-theory">
+                        <div class="color-circle" style="background-color: #0000ff;"></div>
+                        <div class="color-info">Primary: Blue (RGB: 0,0,255)</div>
+                    </div>
+                    <div class="hidden-icon" data-id="3"><i class="fas fa-map"></i></div>
+                </div>
+            </a>
+        </section>
+
+        <section id="cryptex" class="password-section">
+            <h2 class="section-title">The Cryptex</h2>
+            <div class="cryptex-container">
+                <p>Enter the correct combination to reveal a hidden secret.</p>
+                <div class="password-hint">
+                    <span>Hint: </span>
+                    <span class="hint-text">Colors of the primary RGB model in hexadecimal</span>
+                </div>
+                <div class="password-input">
+                    <input type="text" maxlength="7" placeholder="#??????" class="color-code-input">
+                    <button class="submit-password">Submit</button>
+                </div>
+                <div class="cryptex-result"></div>
+            </div>
+        </section>
+
+        <div class="hidden-message">
+            <p>Final secret unlocked: "The greatest hiding place is in plain sight."</p>
+            <div class="easter-egg">
+                <span class="code">∞</span>
+            </div>
+            <div class="color-harmony">
+                <div class="color-theory-explanation">
+                    <h3>Color Harmony Revealed</h3>
+                    <p>The harmony of colors is like the harmony of dimensions - each component must balance perfectly.</p>
+                    <div class="harmony-examples">
+                        <div class="harmony complementary">
+                            <span>Complementary</span>
+                            <div class="color-pair">
+                                <div class="color-sample" style="background-color: var(--accent-color);"></div>
+                                <div class="color-sample" style="background-color: #ffa658;"></div>
+                            </div>
+                        </div>
+                        <div class="harmony analogous">
+                            <span>Analogous</span>
+                            <div class="color-triplet">
+                                <div class="color-sample" style="background-color: #3a7fce;"></div>
+                                <div class="color-sample" style="background-color: var(--accent-color);"></div>
+                                <div class="color-sample" style="background-color: #58caff;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Explore the hidden dimensions of this website</p>
+            <div class="color-spectrum">
+                <div class="spectrum-bar" data-is-colorpicker="true" data-colorpicker-secret="true"></div>
+                <p class="spectrum-note">Every color contains a story</p>
+            </div>
+            <div class="social-icons">
+                <a href="#" class="hidden-hover"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hidden-hover"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="hidden-hover"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="hidden-footer-message">Sometimes the path is visible only to those who know where to look</div>
+        </footer>
+    </div>
+
+    <div class="ascii-art hidden-element">
+<!--
+   ▄████████    ▄████████    ▄████████    ▄████████     ███     
+  ███    ███   ███    ███   ███    ███   ███    ███ ▀█████████▄ 
+  ███    █▀    ███    █▀    ███    █▀    ███    ███    ▀███▀▀██ 
+ ▄███▄▄▄       ███          ███         ▄███▄▄▄▄██▀     ███   ▀ 
+▀▀███▀▀▀     ▀███████████ ▀███████████ ▀▀███▀▀▀▀▀       ███     
+  ███    █▄           ███          ███ ▀███████████     ███     
+  ███    ███    ▄█    ███    ▄█    ███   ███    ███     ███     
+  ██████████  ▄████████▀   ▄████████▀    ███    ███    ▄████▀   
+                                         ███    ███             
+-->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

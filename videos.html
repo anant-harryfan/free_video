@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos - The Hidden Realm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Video page specific styles */
+        .hero-section {
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(13, 17, 23, 0.9), rgba(13, 17, 23, 0.7)), 
+                        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            padding: 50px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 10;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+        
+        .scroll-arrow {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: var(--accent-color);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+        
+        /* Category navigation */
+        .category-nav {
+            position: sticky;
+            top: 0;
+            background-color: rgba(13, 17, 23, 0.9);
+            padding: 15px 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            margin-bottom: 50px;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .category-list {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .category-list::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-item {
+            padding: 8px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 30px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            border: 1px solid rgba(138, 43, 226, 0.5);
+        }
+        
+        .category-item:hover, .category-item.active {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+        
+        /* Video grid layout */
+        .category-section {
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .category-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-title i {
+            margin-right: 15px;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .video-card {
+            background-color: rgba(20, 25, 35, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.6s forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+            background-color: #000;
+        }
+        
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.05);
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(138, 43, 226, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 2;
+        }
+        
+        .video-card:hover .play-button {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .video-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .video-title {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: white;
+            line-height: 1.4;
+        }
+        
+        .video-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: auto;
+        }
+        
+        .video-duration, .video-date {
+            display: flex;
+            align-items: center;
+        }
+        
+        .video-duration i, .video-date i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .video-meta i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Video link styling */
+        .video-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        /* Flowchart section */
+        .flowchart-title {
+            text-align: center;
+            font-size: 2rem;
+            margin: 80px 0 50px;
+            color: var(--accent-color);
+        }
+        
+        .flowchart-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .video-item {
+            display: flex;
+            margin-bottom: 100px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .video-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .video-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .video-container {
+            flex: 1;
+            position: relative;
+            padding-top: 10px;
+        }
+        
+        .video-description-box {
+            flex: 1;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .flowchart-video-title {
+            margin-top: 0;
+            color: var(--accent-color);
+            font-size: 24px;
+        }
+        
+        .video-text {
+            line-height: 1.6;
+        }
+        
+        /* Flowchart line connecting videos */
+        .video-connector {
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--accent-color), rgba(138, 43, 226, 0.5));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+        
+        .connector-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+        
+        /* Make the video responsive */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(138, 43, 226, 0.5);
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Back button */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        
+        /* Animation to fade in videos as you scroll */
+        .video-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Search bar */
+        .search-container {
+            max-width: 600px;
+            margin: 40px auto;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border-radius: 30px;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            background-color: rgba(20, 25, 35, 0.7);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .video-item {
+                flex-direction: column !important;
+            }
+            
+            .video-description-box {
+                padding: 20px 0;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-shading-container">
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+    </div>
+    
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Main
+    </a>
+    
+    <!-- Hero Section / Home Page Style Introduction -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="title reveal-text">The Dimensional Archives</h1>
+            <p class="hero-subtitle fade-in">A collection of knowledge from across the multiverse</p>
+            <p class="hero-description fade-in">
+                Welcome to our comprehensive video collection that explores the hidden dimensions of reality. 
+                Here you'll find a carefully curated library of knowledge that spans across topics from basic 
+                dimensional theory to advanced quantum mechanics and the cryptic languages of ancient realms.
+            </p>
+            <p class="hero-description fade-in">
+                Whether you're a novice traveler or an experienced dimension-hopper, our categorized collection 
+                provides the visual guides you need to navigate the complexities of the Hidden Realm safely and effectively.
+            </p>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for videos across dimensions...">
+            </div>
+        </div>
+        <div class="scroll-arrow" id="scrollToContent">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+    
+    <!-- Category Navigation -->
+    <nav class="category-nav" id="categoryNav">
+        <ul class="category-list">
+            <li class="category-item active" data-category="all">All Videos</li>
+            <li class="category-item" data-category="beginner">Beginner's Guide</li>
+            <li class="category-item" data-category="dimensional">Dimensional Theory</li>
+            <li class="category-item" data-category="color">Color Systems</li>
+            <li class="category-item" data-category="symbols">Symbols & Patterns</li>
+            <li class="category-item" data-category="cryptex">Cryptex & Puzzles</li>
+            <li class="category-item" data-category="advanced">Advanced Techniques</li>
+            <li class="category-item" data-category="hidden">Hidden Knowledge</li>
+        </ul>
+    </nav>
+    
+    <!-- Beginner's Guide Section -->
+    <section class="category-section" id="beginnerSection">
+        <h2 class="category-title"><i class="fas fa-graduation-cap"></i> Beginner's Guide</h2>
+        <div class="video-grid" id="beginnerVideos">
+            <!-- Video 1 -->
+            <a href="videoDesc.html?id=1" class="video-link">
+                <div class="video-card" style="--delay: 1;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dimensional Basics">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Understanding the Basics of Dimensional Travel</h3>
+                        <p class="video-description">An introduction to the fundamental concepts of dimensional navigation and the theory of multiple realities.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 18:24</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> Jun 12, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- Video 2 -->
+            <a href="videoDesc.html?id=2" class="video-link">
+                <div class="video-card" style="--delay: 2;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Portal Safety">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Portal Safety: What Every Beginner Should Know</h3>
+                        <p class="video-description">Essential safety protocols for navigating dimensional portals without getting lost in the void.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 23:10</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> Jul 3, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- Video 3 -->
+            <a href="videoDesc.html?id=3" class="video-link">
+                <div class="video-card" style="--delay: 3;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="RGB Basics">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">RGB Colors: The Foundation of Interdimensional Travel</h3>
+                        <p class="video-description">Learn how colors function as keys to different realities and how to manipulate the RGB spectrum.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 15:45</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> Aug 14, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- Video 4 -->
+            <a href="videoDesc.html?id=4" class="video-link">
+                <div class="video-card" style="--delay: 4;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="First Journey">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Your First Dimensional Journey: What to Expect</h3>
+                        <p class="video-description">A step-by-step guide to preparing for and experiencing your first interdimensional travel.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 28:36</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> Sep 2, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Dimensional Theory Section -->
+    <section class="category-section" id="dimensionalSection">
+        <h2 class="category-title"><i class="fas fa-cube"></i> Dimensional Theory</h2>
+        <div class="video-grid" id="dimensionalVideos">
+            <!-- Video 1 -->
+            <a href="videoDesc.html?id=5" class="video-link">
+                <div class="video-card" style="--delay: 1;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1511306404404-ad607bd7c601?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Multiverse Theory">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">The Structure of the Multiverse: Parallel Realities</h3>
+                        <p class="video-description">An advanced exploration of how parallel dimensions are structured and interact with one another.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 32:18</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> May 20, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- Video 2 -->
+            <a href="videoDesc.html?id=6" class="video-link">
+                <div class="video-card" style="--delay: 2;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1505506874110-6a7a69069a08?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Time Perception">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Time Perception Across Dimensional Boundaries</h3>
+                        <p class="video-description">How time flows differently across dimensions and techniques to adjust your perception.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 27:42</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> Jul 17, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- Video 3 -->
+            <a href="videoDesc.html?id=7" class="video-link">
+                <div class="video-card" style="--delay: 3;">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Quantum Mechanics">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Quantum Foundations of Dimensional Travel</h3>
+                        <p class="video-description">Understanding the quantum mechanical principles that make interdimensional travel possible.</p>
+                        <div class="video-meta">
+                            <span class="video-duration"><i class="far fa-clock"></i> 41:15</span>
+                            <span class="video-date"><i class="far fa-calendar-alt"></i> Aug 30, 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll to content when arrow is clicked
+            const scrollArrow = document.getElementById('scrollToContent');
+            if (scrollArrow) {
+                scrollArrow.addEventListener('click', function() {
+                    const categoryNav = document.getElementById('categoryNav');
+                    if (categoryNav) {
+                        categoryNav.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+            
+            // Category filter functionality
+            const categoryItems = document.querySelectorAll('.category-item');
+            categoryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all category items
+                    categoryItems.forEach(i => i.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Get the category to filter
+                    const category = this.getAttribute('data-category');
+                    
+                    // Implement the actual filtering here
+                    // For now, just log the selected category
+                    console.log(`Category selected: ${category}`);
+                    
+                    // Example of how to filter videos
+                    if (category === 'all') {
+                        document.querySelectorAll('.category-section').forEach(section => {
+                            section.style.display = 'block';
+                        });
+                    } else {
+                        document.querySelectorAll('.category-section').forEach(section => {
+                            if (section.id === `${category}Section`) {
+                                section.style.display = 'block';
+                            } else {
+                                section.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const videoCards = document.querySelectorAll('.video-card');
+                    
+                    videoCards.forEach(card => {
+                        const title = card.querySelector('.video-title').textContent.toLowerCase();
+                        const description = card.querySelector('.video-description').textContent.toLowerCase();
+                        
+                        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+            
+            // Calculate the connector line height for flowchart
+            function updateConnector() {
+                const firstDot = document.querySelector('#video1 .connector-dot');
+                const lastDot = document.querySelector('#video5 .connector-dot');
+                
+                if (firstDot && lastDot) {
+                    const connector = document.querySelector('.video-connector');
+                    const firstDotRect = firstDot.getBoundingClientRect();
+                    const lastDotRect = lastDot.getBoundingClientRect();
+                    
+                    const top = firstDotRect.top + window.pageYOffset;
+                    const height = (lastDotRect.top + window.pageYOffset) - top + lastDot.offsetHeight;
+                    
+                    connector.style.top = top + 'px';
+                    connector.style.height = height + 'px';
+                }
+            }
+            
+            // Fade in videos as they come into view
+            function checkVisibility() {
+                // For flowchart videos
+                const videoItems = document.querySelectorAll('.video-item');
+                videoItems.forEach(item => {
+                    const rect = item.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    
+                    if (rect.top < windowHeight * 0.85) {
+                        item.classList.add('video-visible');
+                    }
+                });
+                
+                updateConnector();
+                
+                // For video cards - they have CSS animations with different delays
+            }
+            
+            // Play button functionality for video cards
+            const playButtons = document.querySelectorAll('.play-button');
+            playButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // In a real implementation, this would open a modal with the video
+                    // For now, just log the event
+                    console.log('Video play button clicked');
+                    alert('Video player would open here in full implementation');
+                });
+            });
+            
+            // Initial check
+            setTimeout(checkVisibility, 100);
+            
+            // Check on scroll
+            window.addEventListener('scroll', checkVisibility);
+            window.addEventListener('resize', updateConnector);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Dimensional Travel - Research Archive</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Modal video library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modal-video@2.4.8/css/modal-video.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/modal-video@2.4.8/js/jquery-modal-video.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Research Document Styles */
+        :root {
+            --primary-bg: #0d1117;
+            --secondary-bg: rgba(20, 25, 35, 0.8);
+            --text-color: rgba(255, 255, 255, 0.9);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --accent-color: #8a2be2;
+            --accent-light: rgba(138, 43, 226, 0.2);
+            --accent-medium: rgba(138, 43, 226, 0.5);
+            --border-color: rgba(138, 43, 226, 0.2);
+            --card-bg: rgba(30, 35, 45, 0.7);
+            --toc-width: 280px;
+            --header-height: 60px;
+            --section-spacing: 3rem;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--primary-bg);
+            overflow-x: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background-color: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .nav-center {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .breadcrumbs a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .nav-right {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-right button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-right button:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Back button */
+        .back-btn {
+            background-color: rgba(138, 43, 226, 0.1);
+            color: var(--text-color);
+            border: 1px solid var(--accent-medium);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-bg);
+        }
+        
+        /* Main Layout */
+        .research-container {
+            position: relative;
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: calc(100vh - var(--header-height));
+            padding-top: 0; /* Changed from var(--header-height) */
+        }
+        
+        /* Table of Contents Sidebar */
+        .research-toc {
+            width: var(--toc-width);
+            height: calc(100vh - var(--header-height));
+            position: sticky;
+            top: var(--header-height);
+            padding: 30px 20px;
+            border-right: 1px solid var(--border-color);
+            background-color: rgba(15, 20, 30, 0.8);
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 50;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            max-height: 80vh;
+            resize: vertical;
+            overflow-y: auto;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .research-toc.dragging {
+            cursor: grabbing !important;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            user-select: none;
+        }
+        
+        .research-toc.closed {
+            display: block;
+            width: var(--toc-width);
+            padding: 30px 20px;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .toggle-sidebar-btn {
+            position: absolute;
+            right: -20px; /* Moved further out */
+            top: 50px; /* More visible position */
+            width: 40px; /* Larger button */
+            height: 40px; /* Larger button */
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 30; /* Higher z-index */
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* More prominent shadow */
+        }
+        
+        .research-toc.closed .toggle-sidebar-btn {
+            transform: rotate(180deg);
+            right: -45px;
+        }
+        
+        .toc-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toc-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        
+        .toc-list a {
+            display: block;
+            padding: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .toc-list a:hover, .toc-list a.active {
+            background-color: var(--accent-light);
+            color: var(--text-color);
+        }
+        
+        .toc-list a.active {
+            border-left: 3px solid var(--accent-color);
+            padding-left: 12px;
+            font-weight: 500;
+        }
+        
+        .toc-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            margin-top: auto;
+        }
+        
+        .watch-video-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+        
+        .watch-video-btn:hover {
+            background-color: #7923c7;
+        }
+        
+        .document-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .document-meta a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .document-meta a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main Content */
+        .research-content {
+            flex: 1;
+            padding: 40px;
+            max-width: none;
+            width: 100%;
+        }
+        
+        .research-content.expanded {
+            max-width: none;
+        }
+        
+        .research-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .research-category {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        
+        .research-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.2;
+            margin: 0 0 1rem;
+            color: white;
+        }
+        
+        .research-authors {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .author-institutions {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        /* Research Sections */
+        .research-section {
+            margin-bottom: var(--section-spacing);
+            scroll-margin-top: calc(var(--header-height) + 20px);
+        }
+        
+        .research-section h2 {
+            font-size: 1.8rem;
+            margin: 0 0 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            color: white;
+        }
+        
+        .section-content {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+        
+        .section-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        /* Highlight Box */
+        .highlight-box {
+            background-color: var(--accent-light);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 2rem 0;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .highlight-icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            flex-shrink: 0;
+        }
+        
+        .highlight-content h4 {
+            margin: 0 0 0.5rem;
+            color: white;
+        }
+        
+        .highlight-content p {
+            margin: 0;
+        }
+        
+        /* Video Thumbnail */
+        .video-thumbnail {
+            position: relative;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+        
+        .video-thumbnail img {
+            width: 100%;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .video-thumbnail:hover img {
+            transform: scale(1.05);
+        }
+        
+        .video-thumbnail:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+            background-color: var(--accent-color);
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background-color: rgba(138, 43, 226, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .video-thumbnail-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        /* Methodology Grid */
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 2rem 0;
+        }
+        
+        .methodology-item {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .methodology-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .methodology-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .methodology-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .methodology-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* Research Figure */
+        .research-figure {
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+        
+        .figure-caption {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        /* Flow Chart */
+        .flow-chart-container {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+        
+        .flow-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .flow-level {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .flow-node {
+            padding: 15px 20px;
+            background-color: var(--accent-light);
+            border-radius: 8px;
+            border: 1px solid var(--accent-medium);
+            position: relative;
+            text-align: center;
+            min-width: 180px;
+            z-index: 1;
+        }
+        
+        .flow-node::after {
+            content: "";
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 15px;
+            background-color: var(--accent-medium);
+        }
+        
+        .flow-level:last-child .flow-node::after {
+            display: none;
+        }
+        
+        /* Findings List */
+        .findings-list {
+            counter-reset: finding;
+        }
+        
+        .finding-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            gap: 15px;
+        }
+        
+        .finding-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .finding-content h4 {
+            margin: 0 0 0.5rem;
+            color: white;
+        }
+        
+        .finding-content p {
+            margin: 0;
+        }
+        
+        /* Chart and Statistics */
+        .chart-container {
+            height: 300px;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .chart-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            margin: 2rem 0;
+        }
+        
+        .statistic-card {
+            background-color: var(--accent-light);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--accent-medium);
+        }
+        
+        .statistic-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--accent-color);
+        }
+        
+        .statistic-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Research Quote */
+        .research-quote {
+            margin: 2.5rem 0;
+            padding: 0 2rem;
+            position: relative;
+        }
+        
+        .research-quote::before {
+            content: "\201C";
+            position: absolute;
+            top: -0.5rem;
+            left: 0;
+            font-size: 4rem;
+            color: var(--accent-medium);
+            line-height: 1;
+            font-family: Georgia, serif;
+        }
+        
+        .research-quote blockquote {
+            margin: 0;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            font-style: italic;
+            color: white;
+        }
+        
+        .research-quote cite {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-style: normal;
+            text-align: right;
+        }
+        
+        /* Applications Grid */
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin: 2rem 0;
+        }
+        
+        .application-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .application-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-medium);
+        }
+        
+        .application-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .application-card h4 {
+            margin: 0 0 1rem;
+            color: white;
+        }
+        
+        .application-card p {
+            font-size: 0.9rem;
+            margin: 0;
+            color: var(--text-muted);
+        }
+        
+        /* Resources List */
+        .resources-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 2rem 0;
+        }
+        
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+        
+        .resource-item:hover {
+            background-color: rgba(40, 45, 55, 0.7);
+            transform: translateX(5px);
+        }
+        
+        .resource-icon {
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--accent-light);
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .resource-info {
+            flex: 1;
+        }
+        
+        .resource-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .resource-description {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .resource-button {
+            margin-left: 15px;
+            padding: 8px 15px;
+            background-color: var(--accent-light);
+            color: white;
+            border: 1px solid var(--accent-medium);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .resource-button:hover {
+            background-color: var(--accent-color);
+        }
+        
+        /* Reference List */
+        .reference-list {
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+        }
+        
+        .reference-list li {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .reference-list em {
+            color: var(--text-color);
+        }
+        
+        /* Related Research */
+        .related-research {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-research h3 {
+            font-size: 1.5rem;
+            margin: 0 0 1.5rem;
+            color: white;
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .related-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .related-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-medium);
+        }
+        
+        .related-thumbnail {
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        .related-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .related-item:hover .related-thumbnail img {
+            transform: scale(1.1);
+        }
+        
+        .related-info {
+            padding: 15px;
+        }
+        
+        .related-info h4 {
+            margin: 0 0 10px;
+            font-size: 1rem;
+            color: white;
+            line-height: 1.4;
+        }
+        
+        .related-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Modal Video */
+        .modal-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-video-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-video-inner {
+            width: 80%;
+            max-width: 1000px;
+            background-color: var(--primary-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: rgba(30, 35, 45, 0.9);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+        
+        .modal-video-player {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .modal-video-player iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .modal-resize-handle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            background-color: var(--accent-color);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            :root {
+                --toc-width: 240px;
+            }
+            
+            .research-content {
+                padding: 30px;
+            }
+            
+            .research-header h1 {
+                font-size: 2.3rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .research-container {
+                flex-direction: column;
+            }
+            
+            .research-toc {
+                position: relative;
+                top: 0;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 20px;
+            }
+            
+            .research-content {
+                padding: 20px;
+            }
+            
+            .research-header h1 {
+                font-size: 2rem;
+            }
+            
+            .applications-grid, .statistics-grid, .methodology-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-section {
+                height: 40vh;
+                min-height: 250px;
+            }
+            
+            .sidebar-resize-handle {
+                display: none;
+            }
+            
+            .research-toc.closed .toggle-sidebar-btn {
+                right: -15px;
+            }
+        }
+        
+        /* New styles for video section at top */
+        .video-section {
+            width: 60%;
+            background-color: black;
+            position: relative;
+            margin-top: var(--header-height);
+            height: 100vh; /* Full height */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .video-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Styles for resizable sidebar */
+        .sidebar-resize-handle {
+            display: none;
+        }
+        
+        /* Height resize handle */
+        .height-resize-handle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            cursor: ns-resize;
+            background-color: transparent;
+        }
+        
+        .height-resize-handle:hover {
+            background-color: rgba(138, 43, 226, 0.2);
+        }
+        
+        /* Add close button for TOC */
+        .close-toc {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .close-toc:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-shading-container">
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+        <div class="shading-element"></div>
+    </div>
+    
+    <nav class="top-nav">
+        <a href="videos.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Archives
+        </a>
+        <div class="nav-center">
+            <div class="breadcrumbs">
+                <a href="index.html">Home</a> /
+                <a href="videos.html">Archives</a> /
+                <span>Research Document</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
+            <button id="font-size-toggle"><i class="fas fa-text-height"></i></button>
+            <button id="share-button"><i class="fas fa-share-alt"></i></button>
+        </div>
+    </nav>
+
+    <!-- Add video section that shows by default -->
+    <div class="video-section" id="videoSection">
+        <div class="video-container">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/tePpQ_1Usv8?si=J3XE4RHRzt5LZ5l9&autoplay=1" title="Understanding the Basics of Dimensional Travel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="research-container">
+        <!-- Add resize handle for the TOC sidebar -->
+        <div id="resizeHandle" class="sidebar-resize-handle">
+            <div class="resize-handle-bar"></div>
+        </div>
+        
+        <!-- Change to have closed class by default -->
+        <aside class="research-toc" id="researchToc">
+            <div class="toc-header" id="tocDragHandle">
+                <h3>Contents</h3>
+                <button class="close-toc" id="closeToc"><i class="fas fa-times"></i></button>
+            </div>
+            <ul class="toc-list">
+                <li><a href="#abstract" class="active">Abstract</a></li>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#findings">Key Findings</a></li>
+                <li><a href="#analysis">Data Analysis</a></li>
+                <li><a href="#applications">Applications</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#references">References</a></li>
+            </ul>
+            
+            <div class="toc-footer">
+                <button class="watch-video-btn" id="openVideoBtn">
+                    <i class="fas fa-play-circle"></i> Watch Video Presentation
+                </button>
+                <div class="document-meta">
+                    <div><i class="far fa-clock"></i> 18 min read</div>
+                    <div><i class="far fa-calendar-alt"></i> Jun 12, 2023</div>
+                    <div><i class="fas fa-download"></i> <a href="#">Download PDF</a></div>
+                </div>
+            </div>
+            <div class="height-resize-handle" id="heightResizeHandle"></div>
+        </aside>
+        
+        <main class="research-content expanded">
+            <header class="research-header">
+                <div class="research-category">Dimensional Theory • Beginner Level</div>
+                <h1>Understanding the Basics of Dimensional Travel</h1>
+                <div class="research-authors">
+                    <span>By Dr. Elara Voss, Dr. Marcus Chen and Team</span>
+                    <div class="author-institutions">Multiversal Research Institute</div>
+                </div>
+            </header>
+            
+            <section id="abstract" class="research-section">
+                <h2>Abstract</h2>
+                <div class="section-content">
+                    <p>This comprehensive research document serves as the foundation for all dimensional travelers, whether you're a beginner or need a refresher on the fundamental principles. We explore the theoretical framework of the multiverse and how different realities can coexist within the same space-time continuum, supported by recent empirical studies and theoretical models.</p>
+                    
+                    <div class="highlight-box">
+                        <div class="highlight-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>Key Takeaway</h4>
+                            <p>Dimensional travel is possible through the manipulation of quantum resonance fields at specific convergence points, allowing consciousness to traverse the interstitial spaces between parallel realities.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="introduction" class="research-section">
+                <h2>Introduction</h2>
+                <div class="section-content">
+                    <p>The multiverse theory has evolved significantly since its early conceptualization by Hugh Everett III in 1957. Modern dimensional theory proposes that countless parallel universes exist alongside our own, separated only by subtle vibrational frequencies and quantum boundaries that can, under specific conditions, be navigated safely.</p>
+                    
+                    <div class="video-thumbnail" id="introVideo">
+                        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dimensional Basics">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-thumbnail-caption">Watch the complete video presentation (18:24)</div>
+                    </div>
+                    
+                    <p>The concepts covered in this research document are essential for safely navigating between dimensions and understanding the mechanics of dimensional portals. We'll address common misconceptions about dimensional travel and provide clarity on how the boundaries between realities function, all supported by peer-reviewed studies and field observations.</p>
+                </div>
+            </section>
+            
+            <section id="methodology" class="research-section">
+                <h2>Methodology</h2>
+                <div class="section-content">
+                    <p>Our research methodology combines theoretical physics with practical experimentation, analyzed through both quantitative and qualitative approaches:</p>
+                    
+                    <div class="methodology-grid">
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-wave-square"></i></div>
+                            <div class="methodology-title">Frequency Analysis</div>
+                            <div class="methodology-desc">Measuring resonance frequencies at dimensional boundaries using quantum harmonic oscillators</div>
+                        </div>
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-brain"></i></div>
+                            <div class="methodology-title">Consciousness Mapping</div>
+                            <div class="methodology-desc">Tracking neural patterns during dimensional perception shifts</div>
+                        </div>
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-project-diagram"></i></div>
+                            <div class="methodology-title">Portal Stability Testing</div>
+                            <div class="methodology-desc">Calculating tensile strength of interdimensional membranes</div>
+                        </div>
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="methodology-title">Field Measurements</div>
+                            <div class="methodology-desc">Documenting environmental conditions at convergence points</div>
+                        </div>
+                    </div>
+                    
+                    <div class="research-figure">
+                        <div class="flow-chart-container">
+                            <div class="flow-chart">
+                                <div class="flow-level">
+                                    <div class="flow-node">Theoretical Framework Development</div>
+                                </div>
+                                <div class="flow-level">
+                                    <div class="flow-node">Lab-based Experiments</div>
+                                    <div class="flow-node">Computer Modeling</div>
+                                </div>
+                                <div class="flow-level">
+                                    <div class="flow-node">Field Testing at Convergence Points</div>
+                                </div>
+                                <div class="flow-level">
+                                    <div class="flow-node">Data Analysis & Pattern Recognition</div>
+                                </div>
+                                <div class="flow-level">
+                                    <div class="flow-node">Research Synthesis & Protocol Development</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="figure-caption">Fig 1: Research Methodology Flow</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="findings" class="research-section">
+                <h2>Key Findings</h2>
+                <div class="section-content">
+                    <div class="findings-list">
+                        <div class="finding-item">
+                            <div class="finding-number">1</div>
+                            <div class="finding-content">
+                                <h4>Dimensional Boundaries are Semi-Permeable</h4>
+                                <p>Our research confirms that the barriers between dimensions are not solid but rather function as semi-permeable membranes that respond to specific frequency stimuli.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="finding-item">
+                            <div class="finding-number">2</div>
+                            <div class="finding-content">
+                                <h4>The RGB Color System as Dimensional Gateway</h4>
+                                <p>We've documented evidence that the RGB color spectrum correlates directly with interdimensional access points, with specific color combinations acting as "keys" to particular realities.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="finding-item">
+                            <div class="finding-number">3</div>
+                            <div class="finding-content">
+                                <h4>Mental State Affects Dimensional Perception</h4>
+                                <p>Consciousness exists in a quantum superposition that can be trained to perceive and interact with multiple dimensions simultaneously.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="finding-item">
+                            <div class="finding-number">4</div>
+                            <div class="finding-content">
+                                <h4>Convergence Points Follow Geometric Patterns</h4>
+                                <p>Natural dimensional convergence points occur in geometric patterns that follow the Fibonacci sequence, making them predictable and mappable.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="analysis" class="research-section">
+                <h2>Data Analysis</h2>
+                <div class="section-content">
+                    <p>Our research has compiled extensive data on dimensional travel success rates across different methodologies:</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="dimensionalDistributionChart"></canvas>
+                    </div>
+                    <div class="chart-caption">Fig 2: Dimensional Travel Success Rates by Methodology</div>
+                    
+                    <div class="statistics-grid">
+                        <div class="statistic-card">
+                            <div class="statistic-value">97%</div>
+                            <div class="statistic-label">Success Rate</div>
+                        </div>
+                        <div class="statistic-card">
+                            <div class="statistic-value">42K+</div>
+                            <div class="statistic-label">Field Tests</div>
+                        </div>
+                        <div class="statistic-card">
+                            <div class="statistic-value">0.003%</div>
+                            <div class="statistic-label">Error Margin</div>
+                        </div>
+                        <div class="statistic-card">
+                            <div class="statistic-value">128</div>
+                            <div class="statistic-label">Dimensions Mapped</div>
+                        </div>
+                    </div>
+                    
+                    <div class="research-quote">
+                        <blockquote>
+                            "The ability to navigate dimensional boundaries is not magical but scientific—a learnable skill based on understanding the quantum nature of reality."
+                        </blockquote>
+                        <cite>— Dr. Elara Voss, Lead Researcher</cite>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="applications" class="research-section">
+                <h2>Practical Applications</h2>
+                <div class="section-content">
+                    <p>The findings from this research have direct applications for interdimensional travelers:</p>
+                    
+                    <div class="applications-grid">
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <h4>Navigation Protocols</h4>
+                            <p>Standardized methods for safely traversing dimensional boundaries without disorientation</p>
+                        </div>
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-shield-alt"></i></div>
+                            <h4>Safety Procedures</h4>
+                            <p>Emergency protocols for dimensional instability events</p>
+                        </div>
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-palette"></i></div>
+                            <h4>RGB Resonance Keys</h4>
+                            <p>Color frequency combinations that unlock specific dimensional pathways</p>
+                        </div>
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-brain"></i></div>
+                            <h4>Consciousness Training</h4>
+                            <p>Mental exercises to prepare for multidimensional perception</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="resources" class="research-section">
+                <h2>Additional Resources</h2>
+                <div class="section-content">
+                    <p>The following supplementary materials are available to enhance your understanding:</p>
+                    
+                    <ul class="resources-list">
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Beginner's Guide to Dimensional Travel</div>
+                                <div class="resource-description">A comprehensive PDF guide with diagrams and examples (4.2MB)</div>
+                            </div>
+                            <button class="resource-button">Download</button>
+                        </li>
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Dimensional Safety Protocols</div>
+                                <div class="resource-description">Essential safety guidelines for new dimensional travelers (2.8MB)</div>
+                            </div>
+                            <button class="resource-button">View</button>
+                        </li>
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Dimensional Frequency Chart</div>
+                                <div class="resource-description">Reference table of dimensional frequencies and resonance points (1.5MB)</div>
+                            </div>
+                            <button class="resource-button">Download</button>
+                        </li>
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Interactive Dimensional Model</div>
+                                <div class="resource-description">3D simulation of dimensional interfaces (requires WebGL)</div>
+                            </div>
+                            <button class="resource-button">Launch</button>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="references" class="research-section">
+                <h2>References</h2>
+                <div class="section-content">
+                    <ol class="reference-list">
+                        <li>Voss, E., & Chen, M. (2022). "Quantum Resonance Patterns at Interdimensional Boundaries." <em>Journal of Multiversal Studies</em>, 42(3), 156-172.</li>
+                        <li>Nakamura, S. (2021). "The RGB Spectrum as a Dimensional Access Mechanism." <em>Theoretical Physics Review</em>, 89(2), 67-89.</li>
+                        <li>Johnson, T., & Smith, A. (2023). "Consciousness as a Multidimensional Observer: New Perspectives." <em>Cognitive Science Quarterly</em>, 18(1), 34-52.</li>
+                        <li>Alvarez, R. (2022). "Mapping Natural Convergence Points Across the North American Continent." <em>Applied Dimensional Research</em>, 7(4), 203-218.</li>
+                        <li>Zhang, L. (2023). "Quantitative Analysis of Dimensional Stability Factors." <em>International Journal of Dimensional Science</em>, 15(2), 112-131.</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <aside class="related-research">
+                <h3>Related Research Documents</h3>
+                <div class="related-grid">
+                    <a href="videoDesc.html?id=2" class="related-item">
+                        <div class="related-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Portal Safety">
+                        </div>
+                        <div class="related-info">
+                            <h4>Portal Safety: Essential Protocols</h4>
+                            <div class="related-meta">
+                                <span><i class="far fa-clock"></i> 23 min read</span>
+                                <span><i class="fas fa-level-up-alt"></i> Beginner</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="videoDesc.html?id=3" class="related-item">
+                        <div class="related-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="RGB Basics">
+                        </div>
+                        <div class="related-info">
+                            <h4>RGB Colors: Keys to Dimensional Access</h4>
+                            <div class="related-meta">
+                                <span><i class="far fa-clock"></i> 15 min read</span>
+                                <span><i class="fas fa-level-up-alt"></i> Intermediate</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="videoDesc.html?id=4" class="related-item">
+                        <div class="related-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="First Journey">
+                        </div>
+                        <div class="related-info">
+                            <h4>First Dimensional Journey: Preparation Guide</h4>
+                            <div class="related-meta">
+                                <span><i class="far fa-clock"></i> 28 min read</span>
+                                <span><i class="fas fa-level-up-alt"></i> Beginner</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </aside>
+        </main>
+    </div>
+    
+    <!-- Modal video container -->
+    <div class="modal-video-container" id="videoModal">
+        <div class="modal-video-inner">
+            <div class="modal-header">
+                <h3>Understanding the Basics of Dimensional Travel</h3>
+                <button class="close-modal" id="closeVideoBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-video-player" id="videoPlayer">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/tePpQ_1Usv8?si=J3XE4RHRzt5LZ5l9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+            <div class="modal-resize-handle" id="resizeHandle"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript for the page functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables
+            const tocLinks = document.querySelectorAll('.toc-list a');
+            const sections = document.querySelectorAll('.research-section');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const fontSizeBtn = document.getElementById('font-size-toggle');
+            const shareBtn = document.getElementById('share-button');
+            const researchToc = document.getElementById('researchToc');
+            const tocDragHandle = document.getElementById('tocDragHandle');
+            const heightResizeHandle = document.getElementById('heightResizeHandle');
+            const closeTocBtn = document.getElementById('closeToc');
+            const videoThumbnail = document.querySelector('.video-thumbnail');
+            const watchVideoBtn = document.querySelector('.watch-video-btn');
+            
+            // Make TOC draggable - improved implementation
+            let isDragging = false;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+            
+            // Open video modal
+            function openVideoModal() {
+                modalContainer.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // If the iframe hasn't been loaded yet, load it now
+                const videoPlayer = document.querySelector('.modal-video-player');
+                if (!videoPlayer.querySelector('iframe')) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+                    iframe.frameBorder = "0";
+                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    videoPlayer.appendChild(iframe);
+                }
+            }
+            
+            // Close video modal
+            function closeVideoModal() {
+                modalContainer.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Event listeners for video
+            if (videoThumbnail) {
+                videoThumbnail.addEventListener('click', openVideoModal);
+            }
+            
+            if (watchVideoBtn) {
+                watchVideoBtn.addEventListener('click', openVideoModal);
+            }
+            
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeVideoModal);
+            }
+            
+            // Click outside to close
+            modalContainer.addEventListener('click', function(e) {
+                if (e.target === modalContainer) {
+                    closeVideoModal();
+                }
+            });
+            
+            function setTranslate(xPos, yPos, el) {
+                // Get viewport dimensions accounting for scroll
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const rect = el.getBoundingClientRect();
+                
+                // Calculate boundaries to keep menu fully visible
+                const rightBoundary = viewportWidth - rect.width - 20;
+                const bottomBoundary = viewportHeight - rect.height - 20;
+                
+                // Constrain positions to keep menu in viewport
+                xPos = Math.max(20, Math.min(xPos, rightBoundary));
+                yPos = Math.max(80, Math.min(yPos, bottomBoundary)); // Keep below top nav
+                
+                // Apply transform directly for smoother performance
+                el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+            }
+            
+            // Add event listeners for dragging
+            tocDragHandle.addEventListener("touchstart", dragStart, { passive: false });
+            document.addEventListener("touchend", dragEnd);
+            document.addEventListener("touchmove", drag, { passive: false });
+            
+            tocDragHandle.addEventListener("mousedown", dragStart);
+            document.addEventListener("mouseup", dragEnd);
+            document.addEventListener("mousemove", drag);
+            
+            // Handle window resize - keep menu in viewport
+            window.addEventListener('resize', function() {
+                // Recalculate position to make sure TOC stays in viewport
+                setTranslate(xOffset, yOffset, researchToc);
+            });
+            
+            // Height resizing with improved mouse handling
+            let isResizingHeight = false;
+            let initialHeight, initialMouseY;
+            
+            heightResizeHandle.addEventListener('mousedown', function(e) {
+                isResizingHeight = true;
+                initialHeight = researchToc.offsetHeight;
+                initialMouseY = e.clientY;
+                document.body.style.cursor = 'ns-resize';
+                researchToc.classList.add('dragging');
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizingHeight) return;
+                
+                // Use requestAnimationFrame for smoother resizing
+                requestAnimationFrame(() => {
+                    const deltaY = e.clientY - initialMouseY;
+                    const newHeight = initialHeight + deltaY;
+                    
+                    // Set min and max height
+                    if (newHeight >= 200 && newHeight <= window.innerHeight * 0.8) {
+                        researchToc.style.height = newHeight + 'px';
+                        
+                        // Ensure it stays in viewport after resize
+                        setTranslate(xOffset, yOffset, researchToc);
+                    }
+                });
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isResizingHeight) {
+                    isResizingHeight = false;
+                    document.body.style.cursor = '';
+                    researchToc.classList.remove('dragging');
+                }
+            });
+            
+            // Handle closing/showing TOC
+            closeTocBtn.addEventListener('click', function() {
+                researchToc.style.display = 'none';
+                
+                // Add a button to show TOC again
+                const showTocBtn = document.createElement('button');
+                showTocBtn.id = 'showTocBtn';
+                showTocBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                showTocBtn.style.position = 'fixed';
+                showTocBtn.style.top = '80px';
+                showTocBtn.style.right = '20px';
+                showTocBtn.style.zIndex = '100';
+                showTocBtn.style.background = 'var(--accent-color)';
+                showTocBtn.style.color = 'white';
+                showTocBtn.style.border = 'none';
+                showTocBtn.style.borderRadius = '50%';
+                showTocBtn.style.width = '40px';
+                showTocBtn.style.height = '40px';
+                showTocBtn.style.cursor = 'pointer';
+                showTocBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+                
+                document.body.appendChild(showTocBtn);
+                
+                showTocBtn.addEventListener('click', function() {
+                    researchToc.style.display = 'block';
+                    document.body.removeChild(showTocBtn);
+                });
+            });
+            
+            // Video functionality
+            if (videoThumbnail) {
+                videoThumbnail.addEventListener('click', function() {
+                    document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            if (watchVideoBtn) {
+                watchVideoBtn.addEventListener('click', function() {
+                    document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            // Table of Contents highlighting
+            function highlightTOC() {
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const scrollPosition = window.scrollY;
+                    
+                    if (scrollPosition >= sectionTop - 100 && 
+                        scrollPosition < sectionTop + sectionHeight - 100) {
+                        currentSection = section.id;
+                    }
+                });
+                
+                tocLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + currentSection) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            // Smooth scroll for TOC links
+            tocLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Listen for scroll to highlight TOC
+            window.addEventListener('scroll', highlightTOC);
+            
+            // Initial highlight
+            highlightTOC();
+        });
+    </script>
+</body>
+</html> 
