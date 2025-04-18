@@ -25,8 +25,9 @@
             --border-color: rgba(138, 43, 226, 0.2);
             --card-bg: rgba(30, 35, 45, 0.7);
             --toc-width: 280px;
-            --header-height: 60px;
+            --header-height: 0px; /* Set to 0 to remove the top spacing from navbar */
             --section-spacing: 3rem;
+            --video-height: 100vh;
         }
         
         body {
@@ -39,80 +40,13 @@
             margin: 0;
         }
         
-        /* Top Navigation */
+        /* Remove top nav bar and its spacing */
+        .top-spacer {
+            display: none;
+        }
+
         .top-nav {
-            height: var(--header-height);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 100;
-            background-color: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .nav-center {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .breadcrumbs {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        
-        .breadcrumbs a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        
-        .breadcrumbs a:hover {
-            color: var(--accent-color);
-        }
-        
-        .nav-right {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .nav-right button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        
-        .nav-right button:hover {
-            color: var(--accent-color);
-        }
-        
-        /* Back button */
-        .back-btn {
-            background-color: rgba(138, 43, 226, 0.1);
-            color: var(--text-color);
-            border: 1px solid var(--accent-medium);
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background-color: var(--accent-color);
-            color: var(--primary-bg);
+            display: none;
         }
         
         /* Main Layout */
@@ -121,8 +55,9 @@
             display: flex;
             max-width: 1600px;
             margin: 0 auto;
-            min-height: calc(100vh - var(--header-height));
-            padding-top: 0; /* Changed from var(--header-height) */
+            min-height: auto;
+            padding-top: 0;
+            clear: both;
         }
         
         /* Main Content */
@@ -796,8 +731,7 @@
             }
             
             .video-section {
-                height: 40vh;
-                min-height: 250px;
+                height: 100vh; /* Full height on mobile too */
             }
             
             .sidebar-resize-handle {
@@ -809,22 +743,23 @@
             }
         }
         
-        /* New styles for video section at top */
+        /* Video section takes full width and 100vh height */
         .video-section {
-            width: 60%;
+            width: 100%; /* Full width */
             background-color: black;
             position: relative;
-            margin-top: var(--header-height);
-            height: 100vh; /* Full height */
-            margin-left: auto;
-            margin-right: auto;
+            margin-top: 0; /* No spacing at top */
+            height: 100vh; /* Full viewport height */
+            margin-left: 0;
+            margin-right: 0;
+            float: none; /* Remove floating */
         }
         
         .video-container {
             width: 100%;
-            height: 100%;
+            height: 100vh;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start; /* Align to left instead of center */
             align-items: center;
         }
         
@@ -1037,6 +972,91 @@
             color: var(--text-color);
             font-weight: 500;
         }
+        
+        /* Add comments section styles */
+        .comments-section {
+            display: none; /* Hide comments section */
+        }
+        
+        /* Update comments header */
+        .comments-header {
+            padding: 15px 20px;
+            background-color: rgba(10, 15, 25, 0.95);
+            border-bottom: 1px solid var(--accent-light);
+            cursor: default; /* Not draggable */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Remove the comments-controls related styles */
+        .comments-controls {
+            display: none; /* Hide controls completely */
+        }
+        
+        .comments-position-toggle {
+            display: none; /* Hide toggle */
+        }
+        
+        .comments-container {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            color: var(--text-color);
+        }
+        
+        .comment-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .comment-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .comment-reply {
+            display: flex;
+            padding-left: 30px;
+            margin-top: -5px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -1046,15 +1066,15 @@
         <div class="shading-element"></div>
     </div>
     
-    <nav class="top-spacer"></nav>
-
-    <!-- Add video section that shows by default -->
+    <div class="main-content-wrapper">
+        <!-- Video section (100% width and height) -->
     <div class="video-section" id="videoSection">
         <div class="video-container">
             <iframe width="100%" height="100%" src="https://www.youtube.com/embed/tePpQ_1Usv8?si=J3XE4RHRzt5LZ5l9&autoplay=1" title="Understanding the Basics of Dimensional Travel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
     </div>
 
+        <!-- Research container - remains the same but now takes full width -->
     <div class="research-container">
         <main class="research-content expanded">
             <header class="research-header">
@@ -1366,6 +1386,7 @@
                 </div>
             </aside>
         </main>
+        </div>
     </div>
     
     <!-- Modal video container -->
@@ -1488,8 +1509,8 @@
                         // Try to open video modal if exists
                         const modalContainer = document.getElementById('videoModal');
                         if (modalContainer) {
-                            modalContainer.classList.add('active');
-                            document.body.style.overflow = 'hidden';
+                modalContainer.classList.add('active');
+                document.body.style.overflow = 'hidden';
                         }
                     }
                 });
@@ -1710,7 +1731,7 @@
                     this.remove();
                 });
             });
-
+            
             // Touch events for mobile support
             dragDiv.addEventListener('touchstart', function(e) {
                 if (e.target.closest('.controls') || e.target.closest('.resize-handle')) return;
@@ -1765,7 +1786,7 @@
                     }
                 }
                 
-                e.preventDefault();
+                    e.preventDefault();
             }, { passive: false });
 
             // Add back touchend
@@ -1775,8 +1796,14 @@
                     isResizing = false;
                     dragDiv.classList.remove('dragging');
                 }
-            });
-        });
+                    });
+                });
+    </script>
+
+    <!-- Add script for comments section functionality -->
+    <script>
+        // No comments section functionality
+        // All code removed
     </script>
 </body>
 </html> 
