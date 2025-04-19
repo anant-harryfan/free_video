@@ -756,17 +756,54 @@
         /* Create a flex container for video and description */
         .video-content-wrapper {
             top: 0;
-
             display: flex;
+            flex-direction: row-reverse; /* Reverse the order to put video on right */
             width: 100%;
             max-width: 1400px;
             position: relative;
-            /* gap: 20px; */
             height: 100vh;
+            position: relative; /* For absolute positioning of resize handle */
+        }
+        
+        /* Add a vertical resize handle between description and video */
+        .section-resize-handle {
+            position: absolute;
+            left: 25%; /* Match with current Desc width */
+            top: 0;
+            width: 10px;
+            height: 100%;
+            background-color: transparent;
+            cursor: ew-resize;
+            z-index: 999;
+        }
+        
+        .section-resize-handle::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 40px;
+            background-color: var(--accent-medium);
+            border-radius: 2px;
+            opacity: 0.5;
+            /* transition: opacity 0.2s; */
+        }
+        
+        .section-resize-handle:hover::after {
+            opacity: 1;
+            height: 80px;
+        }
+        
+        .section-resize-handle.resizing::after {
+            opacity: 1;
+            height: 120px;
+            background-color: var(--accent-color);
         }
         
         .video-container {
-            width: 95%; 
+            width: 95%; /* Set video width to 65% based on the image */
             height: 100%;
             position: relative;
             transition: all 0.3s ease;
@@ -790,35 +827,12 @@
         }
         
         /* Toggle button for expanding/collapsing video - updated with text */
-        .video-size-toggle {
-            position: absolute;
-            right: 30%;
-            bottom: 5px;
-            background-color: rgba(4, 196, 255, 0.493);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.2s ease;
-            font-size: 14px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+
         
-        .video-size-toggle:hover {
-            background-color: rgba(138, 43, 226, 0.8);
-            transform: scale(1.05);
-        }
         
         /* Description panel styles - simplified to match the website's design */
         .Desc {
-            width: 40%; /* Description takes 40% of the space */
+            width: 25%; /* Description takes 35% of the space */
             height: 90%;
             background-color: rgba(20, 25, 35, 0);
             padding: 25px;
@@ -826,7 +840,6 @@
             display: flex;
             flex-direction: column;
             backdrop-filter: blur(5px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
             overflow-y: auto;
         }
         
@@ -834,7 +847,7 @@
         .video-container.expanded + .Desc {
             opacity: 0;
             pointer-events: none;
-            transform: translateX(20px);
+            transform: translateX(-20px);
         }
         
 
@@ -873,19 +886,11 @@
             width: 8px;
         }
         
-        .Desc::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-        }
+
         
-        .Desc::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
+     
         
-        .Desc::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+ 
         
         /* Action buttons */
         .action-buttons {
@@ -933,7 +938,7 @@
             }
             
             .video-container {
-                width: 100%;
+            width: 100%;
                 height: 50vh;
             }
             
@@ -1017,7 +1022,7 @@
             font-size: 1.2rem;
             transition: color 0.2s ease;
         }
-
+        
         .close-btn:hover {
             color: var(--accent-color);
         }
@@ -1139,11 +1144,11 @@
     
     <div class="main-content-wrapper">
         <!-- Video section with description panel -->
-        <div class="video-section" id="videoSection">
+    <div class="video-section" id="videoSection">
             <div class="video-content-wrapper">
                 <div class="video-container" id="videoContainer">
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/tePpQ_1Usv8?si=J3XE4RHRzt5LZ5l9&autoplay=1" title="Understanding the Basics of Dimensional Travel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                </div>
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/tePpQ_1Usv8?si=J3XE4RHRzt5LZ5l9&autoplay=1" title="Understanding the Basics of Dimensional Travel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
                 <div class="Desc">
                     
                     <div class="video-stats">
@@ -1151,8 +1156,8 @@
                         <div class="stats-item"><i class="fas fa-clock"></i> 2 weeks ago</div>
                         <div class="stats-item"><i class="fas fa-thumbs-up"></i> 142K</div>
                         <div class="stats-item"><i class="fas fa-thumbs-down"></i> 1.2K</div>
-                    </div>
-                    
+        </div>
+        
                     <div class="video-description">
                         This comprehensive research video serves as the foundation for all dimensional travelers, whether you're a beginner or need a refresher on the fundamental principles. We explore the theoretical framework of the multiverse and how different realities can coexist within the same space-time continuum.
                         <br><br>
@@ -1167,330 +1172,330 @@
                         📄 Download the full research paper: https://multiversal-institute.org/dimensional-basics
                         <br>
                         👩‍🔬 Connect with Dr. Elara Voss: @DrElaraVoss
-                    </div>
+            </div>
                     
                     <div class="action-buttons">
                         <button class="action-btn"><i class="fas fa-share"></i> Share</button>
                         <button class="action-btn"><i class="fas fa-download"></i> Download</button>
                         <button class="action-btn"><i class="fas fa-bookmark"></i> Save</button>
                         <button class="action-btn"><i class="fas fa-file-pdf"></i> PDF</button>
-                    </div>
                 </div>
             </div>
+            </div>
         </div>
-
+        
         <!-- Research container - remains the same but now takes full width -->
         <div class="research-container">
-            <main class="research-content expanded">
-                <header class="research-header">
-                    <div class="research-category">Dimensional Theory • Beginner Level</div>
-                    <h1>Understanding the Basics of Dimensional Travel</h1>
-                    <div class="research-authors">
-                        <span>By Dr. Elara Voss, Dr. Marcus Chen and Team</span>
-                        <div class="author-institutions">Multiversal Research Institute</div>
-                    </div>
-                </header>
-                
-                <section id="abstract" class="research-section">
-                    <h2>Abstract</h2>
-                    <div class="section-content">
-                        <p>This comprehensive research document serves as the foundation for all dimensional travelers, whether you're a beginner or need a refresher on the fundamental principles. We explore the theoretical framework of the multiverse and how different realities can coexist within the same space-time continuum, supported by recent empirical studies and theoretical models.</p>
-                        
-                        <div class="highlight-box">
-                            <div class="highlight-icon">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Key Takeaway</h4>
-                                <p>Dimensional travel is possible through the manipulation of quantum resonance fields at specific convergence points, allowing consciousness to traverse the interstitial spaces between parallel realities.</p>
-                            </div>
+        <main class="research-content expanded">
+            <header class="research-header">
+                <div class="research-category">Dimensional Theory • Beginner Level</div>
+                <h1>Understanding the Basics of Dimensional Travel</h1>
+                <div class="research-authors">
+                    <span>By Dr. Elara Voss, Dr. Marcus Chen and Team</span>
+                    <div class="author-institutions">Multiversal Research Institute</div>
+                </div>
+            </header>
+            
+            <section id="abstract" class="research-section">
+                <h2>Abstract</h2>
+                <div class="section-content">
+                    <p>This comprehensive research document serves as the foundation for all dimensional travelers, whether you're a beginner or need a refresher on the fundamental principles. We explore the theoretical framework of the multiverse and how different realities can coexist within the same space-time continuum, supported by recent empirical studies and theoretical models.</p>
+                    
+                    <div class="highlight-box">
+                        <div class="highlight-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>Key Takeaway</h4>
+                            <p>Dimensional travel is possible through the manipulation of quantum resonance fields at specific convergence points, allowing consciousness to traverse the interstitial spaces between parallel realities.</p>
                         </div>
                     </div>
-                </section>
-                
-                <section id="introduction" class="research-section">
-                    <h2>Introduction</h2>
-                    <div class="section-content">
-                        <p>The multiverse theory has evolved significantly since its early conceptualization by Hugh Everett III in 1957. Modern dimensional theory proposes that countless parallel universes exist alongside our own, separated only by subtle vibrational frequencies and quantum boundaries that can, under specific conditions, be navigated safely.</p>
-                        
-                        <div class="video-thumbnail" id="introVideo">
-                            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dimensional Basics">
-                            <div class="play-button">
-                                <i class="fas fa-play"></i>
-                            </div>
-                            <div class="video-thumbnail-caption">Watch the complete video presentation (18:24)</div>
+                </div>
+            </section>
+            
+            <section id="introduction" class="research-section">
+                <h2>Introduction</h2>
+                <div class="section-content">
+                    <p>The multiverse theory has evolved significantly since its early conceptualization by Hugh Everett III in 1957. Modern dimensional theory proposes that countless parallel universes exist alongside our own, separated only by subtle vibrational frequencies and quantum boundaries that can, under specific conditions, be navigated safely.</p>
+                    
+                    <div class="video-thumbnail" id="introVideo">
+                        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dimensional Basics">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
                         </div>
-                        
-                        <p>The concepts covered in this research document are essential for safely navigating between dimensions and understanding the mechanics of dimensional portals. We'll address common misconceptions about dimensional travel and provide clarity on how the boundaries between realities function, all supported by peer-reviewed studies and field observations.</p>
+                        <div class="video-thumbnail-caption">Watch the complete video presentation (18:24)</div>
                     </div>
-                </section>
-                
-                <section id="methodology" class="research-section">
-                    <h2>Methodology</h2>
-                    <div class="section-content">
-                        <p>Our research methodology combines theoretical physics with practical experimentation, analyzed through both quantitative and qualitative approaches:</p>
-                        
-                        <div class="methodology-grid">
-                            <div class="methodology-item">
-                                <div class="methodology-icon"><i class="fas fa-wave-square"></i></div>
-                                <div class="methodology-title">Frequency Analysis</div>
-                                <div class="methodology-desc">Measuring resonance frequencies at dimensional boundaries using quantum harmonic oscillators</div>
-                            </div>
-                            <div class="methodology-item">
-                                <div class="methodology-icon"><i class="fas fa-brain"></i></div>
-                                <div class="methodology-title">Consciousness Mapping</div>
-                                <div class="methodology-desc">Tracking neural patterns during dimensional perception shifts</div>
-                            </div>
-                            <div class="methodology-item">
-                                <div class="methodology-icon"><i class="fas fa-project-diagram"></i></div>
-                                <div class="methodology-title">Portal Stability Testing</div>
-                                <div class="methodology-desc">Calculating tensile strength of interdimensional membranes</div>
-                            </div>
-                            <div class="methodology-item">
-                                <div class="methodology-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                <div class="methodology-title">Field Measurements</div>
-                                <div class="methodology-desc">Documenting environmental conditions at convergence points</div>
-                            </div>
+                    
+                    <p>The concepts covered in this research document are essential for safely navigating between dimensions and understanding the mechanics of dimensional portals. We'll address common misconceptions about dimensional travel and provide clarity on how the boundaries between realities function, all supported by peer-reviewed studies and field observations.</p>
+                </div>
+            </section>
+            
+            <section id="methodology" class="research-section">
+                <h2>Methodology</h2>
+                <div class="section-content">
+                    <p>Our research methodology combines theoretical physics with practical experimentation, analyzed through both quantitative and qualitative approaches:</p>
+                    
+                    <div class="methodology-grid">
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-wave-square"></i></div>
+                            <div class="methodology-title">Frequency Analysis</div>
+                            <div class="methodology-desc">Measuring resonance frequencies at dimensional boundaries using quantum harmonic oscillators</div>
                         </div>
-                        
-                        <div class="research-figure">
-                            <div class="flow-chart-container">
-                                <div class="flow-chart">
-                                    <div class="flow-level">
-                                        <div class="flow-node">Theoretical Framework Development</div>
-                                    </div>
-                                    <div class="flow-level">
-                                        <div class="flow-node">Lab-based Experiments</div>
-                                        <div class="flow-node">Computer Modeling</div>
-                                    </div>
-                                    <div class="flow-level">
-                                        <div class="flow-node">Field Testing at Convergence Points</div>
-                                    </div>
-                                    <div class="flow-level">
-                                        <div class="flow-node">Data Analysis & Pattern Recognition</div>
-                                    </div>
-                                    <div class="flow-level">
-                                        <div class="flow-node">Research Synthesis & Protocol Development</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="figure-caption">Fig 1: Research Methodology Flow</div>
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-brain"></i></div>
+                            <div class="methodology-title">Consciousness Mapping</div>
+                            <div class="methodology-desc">Tracking neural patterns during dimensional perception shifts</div>
+                        </div>
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-project-diagram"></i></div>
+                            <div class="methodology-title">Portal Stability Testing</div>
+                            <div class="methodology-desc">Calculating tensile strength of interdimensional membranes</div>
+                        </div>
+                        <div class="methodology-item">
+                            <div class="methodology-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="methodology-title">Field Measurements</div>
+                            <div class="methodology-desc">Documenting environmental conditions at convergence points</div>
                         </div>
                     </div>
-                </section>
-                
-                <section id="findings" class="research-section">
-                    <h2>Key Findings</h2>
-                    <div class="section-content">
-                        <div class="findings-list">
-                            <div class="finding-item">
-                                <div class="finding-number">1</div>
-                                <div class="finding-content">
-                                    <h4>Dimensional Boundaries are Semi-Permeable</h4>
-                                    <p>Our research confirms that the barriers between dimensions are not solid but rather function as semi-permeable membranes that respond to specific frequency stimuli.</p>
+                    
+                    <div class="research-figure">
+                        <div class="flow-chart-container">
+                            <div class="flow-chart">
+                                <div class="flow-level">
+                                    <div class="flow-node">Theoretical Framework Development</div>
                                 </div>
-                            </div>
-                            
-                            <div class="finding-item">
-                                <div class="finding-number">2</div>
-                                <div class="finding-content">
-                                    <h4>The RGB Color System as Dimensional Gateway</h4>
-                                    <p>We've documented evidence that the RGB color spectrum correlates directly with interdimensional access points, with specific color combinations acting as "keys" to particular realities.</p>
+                                <div class="flow-level">
+                                    <div class="flow-node">Lab-based Experiments</div>
+                                    <div class="flow-node">Computer Modeling</div>
                                 </div>
-                            </div>
-                            
-                            <div class="finding-item">
-                                <div class="finding-number">3</div>
-                                <div class="finding-content">
-                                    <h4>Mental State Affects Dimensional Perception</h4>
-                                    <p>Consciousness exists in a quantum superposition that can be trained to perceive and interact with multiple dimensions simultaneously.</p>
+                                <div class="flow-level">
+                                    <div class="flow-node">Field Testing at Convergence Points</div>
                                 </div>
-                            </div>
-                            
-                            <div class="finding-item">
-                                <div class="finding-number">4</div>
-                                <div class="finding-content">
-                                    <h4>Convergence Points Follow Geometric Patterns</h4>
-                                    <p>Natural dimensional convergence points occur in geometric patterns that follow the Fibonacci sequence, making them predictable and mappable.</p>
+                                <div class="flow-level">
+                                    <div class="flow-node">Data Analysis & Pattern Recognition</div>
+                                </div>
+                                <div class="flow-level">
+                                    <div class="flow-node">Research Synthesis & Protocol Development</div>
                                 </div>
                             </div>
                         </div>
+                        <div class="figure-caption">Fig 1: Research Methodology Flow</div>
                     </div>
-                </section>
-                
-                <section id="analysis" class="research-section">
-                    <h2>Data Analysis</h2>
-                    <div class="section-content">
-                        <p>Our research has compiled extensive data on dimensional travel success rates across different methodologies:</p>
-                        
-                        <div class="chart-container">
-                            <canvas id="dimensionalDistributionChart"></canvas>
-                        </div>
-                        <div class="chart-caption">Fig 2: Dimensional Travel Success Rates by Methodology</div>
-                        
-                        <div class="statistics-grid">
-                            <div class="statistic-card">
-                                <div class="statistic-value">97%</div>
-                                <div class="statistic-label">Success Rate</div>
-                            </div>
-                            <div class="statistic-card">
-                                <div class="statistic-value">42K+</div>
-                                <div class="statistic-label">Field Tests</div>
-                            </div>
-                            <div class="statistic-card">
-                                <div class="statistic-value">0.003%</div>
-                                <div class="statistic-label">Error Margin</div>
-                            </div>
-                            <div class="statistic-card">
-                                <div class="statistic-value">128</div>
-                                <div class="statistic-label">Dimensions Mapped</div>
+                </div>
+            </section>
+            
+            <section id="findings" class="research-section">
+                <h2>Key Findings</h2>
+                <div class="section-content">
+                    <div class="findings-list">
+                        <div class="finding-item">
+                            <div class="finding-number">1</div>
+                            <div class="finding-content">
+                                <h4>Dimensional Boundaries are Semi-Permeable</h4>
+                                <p>Our research confirms that the barriers between dimensions are not solid but rather function as semi-permeable membranes that respond to specific frequency stimuli.</p>
                             </div>
                         </div>
                         
-                        <div class="research-quote">
-                            <blockquote>
-                                "The ability to navigate dimensional boundaries is not magical but scientific—a learnable skill based on understanding the quantum nature of reality."
-                            </blockquote>
-                            <cite>— Dr. Elara Voss, Lead Researcher</cite>
+                        <div class="finding-item">
+                            <div class="finding-number">2</div>
+                            <div class="finding-content">
+                                <h4>The RGB Color System as Dimensional Gateway</h4>
+                                <p>We've documented evidence that the RGB color spectrum correlates directly with interdimensional access points, with specific color combinations acting as "keys" to particular realities.</p>
+                            </div>
                         </div>
-                    </div>
-                </section>
-                
-                <section id="applications" class="research-section">
-                    <h2>Practical Applications</h2>
-                    <div class="section-content">
-                        <p>The findings from this research have direct applications for interdimensional travelers:</p>
                         
-                        <div class="applications-grid">
-                            <div class="application-card">
-                                <div class="application-icon"><i class="fas fa-map-marked-alt"></i></div>
-                                <h4>Navigation Protocols</h4>
-                                <p>Standardized methods for safely traversing dimensional boundaries without disorientation</p>
+                        <div class="finding-item">
+                            <div class="finding-number">3</div>
+                            <div class="finding-content">
+                                <h4>Mental State Affects Dimensional Perception</h4>
+                                <p>Consciousness exists in a quantum superposition that can be trained to perceive and interact with multiple dimensions simultaneously.</p>
                             </div>
-                            <div class="application-card">
-                                <div class="application-icon"><i class="fas fa-shield-alt"></i></div>
-                                <h4>Safety Procedures</h4>
-                                <p>Emergency protocols for dimensional instability events</p>
-                            </div>
-                            <div class="application-card">
-                                <div class="application-icon"><i class="fas fa-palette"></i></div>
-                                <h4>RGB Resonance Keys</h4>
-                                <p>Color frequency combinations that unlock specific dimensional pathways</p>
-                            </div>
-                            <div class="application-card">
-                                <div class="application-icon"><i class="fas fa-brain"></i></div>
-                                <h4>Consciousness Training</h4>
-                                <p>Mental exercises to prepare for multidimensional perception</p>
+                        </div>
+                        
+                        <div class="finding-item">
+                            <div class="finding-number">4</div>
+                            <div class="finding-content">
+                                <h4>Convergence Points Follow Geometric Patterns</h4>
+                                <p>Natural dimensional convergence points occur in geometric patterns that follow the Fibonacci sequence, making them predictable and mappable.</p>
                             </div>
                         </div>
                     </div>
-                </section>
-                
-                <section id="resources" class="research-section">
-                    <h2>Additional Resources</h2>
-                    <div class="section-content">
-                        <p>The following supplementary materials are available to enhance your understanding:</p>
-                        
-                        <ul class="resources-list">
-                            <li class="resource-item">
-                                <div class="resource-icon">
-                                    <i class="fas fa-file-pdf"></i>
-                                </div>
-                                <div class="resource-info">
-                                    <div class="resource-title">Beginner's Guide to Dimensional Travel</div>
-                                    <div class="resource-description">A comprehensive PDF guide with diagrams and examples (4.2MB)</div>
-                                </div>
-                                <button class="resource-button">Download</button>
-                            </li>
-                            <li class="resource-item">
-                                <div class="resource-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <div class="resource-info">
-                                    <div class="resource-title">Dimensional Safety Protocols</div>
-                                    <div class="resource-description">Essential safety guidelines for new dimensional travelers (2.8MB)</div>
-                                </div>
-                                <button class="resource-button">View</button>
-                            </li>
-                            <li class="resource-item">
-                                <div class="resource-icon">
-                                    <i class="fas fa-table"></i>
-                                </div>
-                                <div class="resource-info">
-                                    <div class="resource-title">Dimensional Frequency Chart</div>
-                                    <div class="resource-description">Reference table of dimensional frequencies and resonance points (1.5MB)</div>
-                                </div>
-                                <button class="resource-button">Download</button>
-                            </li>
-                            <li class="resource-item">
-                                <div class="resource-icon">
-                                    <i class="fas fa-file-code"></i>
-                                </div>
-                                <div class="resource-info">
-                                    <div class="resource-title">Interactive Dimensional Model</div>
-                                    <div class="resource-description">3D simulation of dimensional interfaces (requires WebGL)</div>
-                                </div>
-                                <button class="resource-button">Launch</button>
-                            </li>
-                        </ul>
+                </div>
+            </section>
+            
+            <section id="analysis" class="research-section">
+                <h2>Data Analysis</h2>
+                <div class="section-content">
+                    <p>Our research has compiled extensive data on dimensional travel success rates across different methodologies:</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="dimensionalDistributionChart"></canvas>
                     </div>
-                </section>
-                
-                <section id="references" class="research-section">
-                    <h2>References</h2>
-                    <div class="section-content">
-                        <ol class="reference-list">
-                            <li>Voss, E., & Chen, M. (2022). "Quantum Resonance Patterns at Interdimensional Boundaries." <em>Journal of Multiversal Studies</em>, 42(3), 156-172.</li>
-                            <li>Nakamura, S. (2021). "The RGB Spectrum as a Dimensional Access Mechanism." <em>Theoretical Physics Review</em>, 89(2), 67-89.</li>
-                            <li>Johnson, T., & Smith, A. (2023). "Consciousness as a Multidimensional Observer: New Perspectives." <em>Cognitive Science Quarterly</em>, 18(1), 34-52.</li>
-                            <li>Alvarez, R. (2022). "Mapping Natural Convergence Points Across the North American Continent." <em>Applied Dimensional Research</em>, 7(4), 203-218.</li>
-                            <li>Zhang, L. (2023). "Quantitative Analysis of Dimensional Stability Factors." <em>International Journal of Dimensional Science</em>, 15(2), 112-131.</li>
-                        </ol>
+                    <div class="chart-caption">Fig 2: Dimensional Travel Success Rates by Methodology</div>
+                    
+                    <div class="statistics-grid">
+                        <div class="statistic-card">
+                            <div class="statistic-value">97%</div>
+                            <div class="statistic-label">Success Rate</div>
+                        </div>
+                        <div class="statistic-card">
+                            <div class="statistic-value">42K+</div>
+                            <div class="statistic-label">Field Tests</div>
+                        </div>
+                        <div class="statistic-card">
+                            <div class="statistic-value">0.003%</div>
+                            <div class="statistic-label">Error Margin</div>
+                        </div>
+                        <div class="statistic-card">
+                            <div class="statistic-value">128</div>
+                            <div class="statistic-label">Dimensions Mapped</div>
+                        </div>
                     </div>
-                </section>
-                
-                <aside class="related-research">
-                    <h3>Related Research Documents</h3>
-                    <div class="related-grid">
-                        <a href="videoDesc.html?id=2" class="related-item">
-                            <div class="related-thumbnail">
-                                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Portal Safety">
-                            </div>
-                            <div class="related-info">
-                                <h4>Portal Safety: Essential Protocols</h4>
-                                <div class="related-meta">
-                                    <span><i class="far fa-clock"></i> 23 min read</span>
-                                    <span><i class="fas fa-level-up-alt"></i> Beginner</span>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="videoDesc.html?id=3" class="related-item">
-                            <div class="related-thumbnail">
-                                <img src="https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="RGB Basics">
-                            </div>
-                            <div class="related-info">
-                                <h4>RGB Colors: Keys to Dimensional Access</h4>
-                                <div class="related-meta">
-                                    <span><i class="far fa-clock"></i> 15 min read</span>
-                                    <span><i class="fas fa-level-up-alt"></i> Intermediate</span>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="videoDesc.html?id=4" class="related-item">
-                            <div class="related-thumbnail">
-                                <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="First Journey">
-                            </div>
-                            <div class="related-info">
-                                <h4>First Dimensional Journey: Preparation Guide</h4>
-                                <div class="related-meta">
-                                    <span><i class="far fa-clock"></i> 28 min read</span>
-                                    <span><i class="fas fa-level-up-alt"></i> Beginner</span>
-                                </div>
-                            </div>
-                        </a>
+                    
+                    <div class="research-quote">
+                        <blockquote>
+                            "The ability to navigate dimensional boundaries is not magical but scientific—a learnable skill based on understanding the quantum nature of reality."
+                        </blockquote>
+                        <cite>— Dr. Elara Voss, Lead Researcher</cite>
                     </div>
-                </aside>
-            </main>
+                </div>
+            </section>
+            
+            <section id="applications" class="research-section">
+                <h2>Practical Applications</h2>
+                <div class="section-content">
+                    <p>The findings from this research have direct applications for interdimensional travelers:</p>
+                    
+                    <div class="applications-grid">
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <h4>Navigation Protocols</h4>
+                            <p>Standardized methods for safely traversing dimensional boundaries without disorientation</p>
+                        </div>
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-shield-alt"></i></div>
+                            <h4>Safety Procedures</h4>
+                            <p>Emergency protocols for dimensional instability events</p>
+                        </div>
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-palette"></i></div>
+                            <h4>RGB Resonance Keys</h4>
+                            <p>Color frequency combinations that unlock specific dimensional pathways</p>
+                        </div>
+                        <div class="application-card">
+                            <div class="application-icon"><i class="fas fa-brain"></i></div>
+                            <h4>Consciousness Training</h4>
+                            <p>Mental exercises to prepare for multidimensional perception</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="resources" class="research-section">
+                <h2>Additional Resources</h2>
+                <div class="section-content">
+                    <p>The following supplementary materials are available to enhance your understanding:</p>
+                    
+                    <ul class="resources-list">
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Beginner's Guide to Dimensional Travel</div>
+                                <div class="resource-description">A comprehensive PDF guide with diagrams and examples (4.2MB)</div>
+                            </div>
+                            <button class="resource-button">Download</button>
+                        </li>
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Dimensional Safety Protocols</div>
+                                <div class="resource-description">Essential safety guidelines for new dimensional travelers (2.8MB)</div>
+                            </div>
+                            <button class="resource-button">View</button>
+                        </li>
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Dimensional Frequency Chart</div>
+                                <div class="resource-description">Reference table of dimensional frequencies and resonance points (1.5MB)</div>
+                            </div>
+                            <button class="resource-button">Download</button>
+                        </li>
+                        <li class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <div class="resource-info">
+                                <div class="resource-title">Interactive Dimensional Model</div>
+                                <div class="resource-description">3D simulation of dimensional interfaces (requires WebGL)</div>
+                            </div>
+                            <button class="resource-button">Launch</button>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="references" class="research-section">
+                <h2>References</h2>
+                <div class="section-content">
+                    <ol class="reference-list">
+                        <li>Voss, E., & Chen, M. (2022). "Quantum Resonance Patterns at Interdimensional Boundaries." <em>Journal of Multiversal Studies</em>, 42(3), 156-172.</li>
+                        <li>Nakamura, S. (2021). "The RGB Spectrum as a Dimensional Access Mechanism." <em>Theoretical Physics Review</em>, 89(2), 67-89.</li>
+                        <li>Johnson, T., & Smith, A. (2023). "Consciousness as a Multidimensional Observer: New Perspectives." <em>Cognitive Science Quarterly</em>, 18(1), 34-52.</li>
+                        <li>Alvarez, R. (2022). "Mapping Natural Convergence Points Across the North American Continent." <em>Applied Dimensional Research</em>, 7(4), 203-218.</li>
+                        <li>Zhang, L. (2023). "Quantitative Analysis of Dimensional Stability Factors." <em>International Journal of Dimensional Science</em>, 15(2), 112-131.</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <aside class="related-research">
+                <h3>Related Research Documents</h3>
+                <div class="related-grid">
+                    <a href="videoDesc.html?id=2" class="related-item">
+                        <div class="related-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Portal Safety">
+                        </div>
+                        <div class="related-info">
+                            <h4>Portal Safety: Essential Protocols</h4>
+                            <div class="related-meta">
+                                <span><i class="far fa-clock"></i> 23 min read</span>
+                                <span><i class="fas fa-level-up-alt"></i> Beginner</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="videoDesc.html?id=3" class="related-item">
+                        <div class="related-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="RGB Basics">
+                        </div>
+                        <div class="related-info">
+                            <h4>RGB Colors: Keys to Dimensional Access</h4>
+                            <div class="related-meta">
+                                <span><i class="far fa-clock"></i> 15 min read</span>
+                                <span><i class="fas fa-level-up-alt"></i> Intermediate</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="videoDesc.html?id=4" class="related-item">
+                        <div class="related-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="First Journey">
+                        </div>
+                        <div class="related-info">
+                            <h4>First Dimensional Journey: Preparation Guide</h4>
+                            <div class="related-meta">
+                                <span><i class="far fa-clock"></i> 28 min read</span>
+                                <span><i class="fas fa-level-up-alt"></i> Beginner</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </aside>
+        </main>
         </div>
     </div>
     
@@ -1547,6 +1552,9 @@
         </div>
         <div class="resize-handle"></div>
     </div>
+
+    <!-- Add vertical resize handle between video and description -->
+    <div class="section-resize-handle" id="sectionResizeHandle"></div>
 
     <!-- Add script for draggable div functionality -->
     <script>
@@ -1913,41 +1921,225 @@
 
 
 
-    <!-- Additional script for the new button in the draggable div -->
+
+    <!-- Additional script for section resizing -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const resizeHandle = document.getElementById('sectionResizeHandle');
             const videoContainer = document.getElementById('videoContainer');
-            const videoToggle = document.getElementById('videoSizeToggle');
-            const videoExpandBtn = document.getElementById('videoExpandBtn');
+            const descSection = document.querySelector('.Desc');
+            const videoWrapper = document.querySelector('.video-content-wrapper');
             
-            // Sync the expand button in dragable div with the one in video
-            videoExpandBtn.addEventListener('click', function() {
-                // Toggle expanded class on video container
-                videoContainer.classList.toggle('expanded');
+            let isResizing = false;
+            let initialX;
+            let initialDescWidth;
+            let initialVideoWidth;
+            
+            // Minimum widths
+            const minDescWidth = 10; // percent
+            const minVideoWidth = 10; // percent
+            
+            // Set initial position of resize handle
+            if (resizeHandle) {
+                updateHandlePosition();
+            }
+            
+            function updateHandlePosition() {
+                const descWidth = parseFloat(window.getComputedStyle(descSection).width);
+                const wrapperWidth = parseFloat(window.getComputedStyle(videoWrapper).width);
+                const leftPos = (descWidth / wrapperWidth) * 100;
+                resizeHandle.style.left = leftPos + '%';
+            }
+            
+            // Resizing functions
+            resizeHandle.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                initialX = e.clientX;
+                initialDescWidth = parseFloat(window.getComputedStyle(descSection).width);
+                initialVideoWidth = parseFloat(window.getComputedStyle(videoContainer).width);
                 
-                // Update the text on both buttons
-                if (videoContainer.classList.contains('expanded')) {
-                    this.textContent = 'Shrink video';
-                    if (videoToggle) videoToggle.textContent = 'Shrink video';
-                    // Ensure body scrolling is not disabled when expanded
-                    document.body.style.overflow = 'auto';
-                } else {
-                    this.textContent = 'Expand video';
-                    if (videoToggle) videoToggle.textContent = 'Expand video';
+                resizeHandle.classList.add('resizing');
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+                
+                const deltaX = e.clientX - initialX;
+                const wrapperWidth = parseFloat(window.getComputedStyle(videoWrapper).width);
+                
+                // Calculate new widths in percentage
+                let newDescWidthPercent = ((initialDescWidth + deltaX) / wrapperWidth) * 100;
+                let newVideoWidthPercent = 100 - newDescWidthPercent;
+                
+                // Apply min width constraints
+                if (newDescWidthPercent < minDescWidth) {
+                    newDescWidthPercent = minDescWidth;
+                    newVideoWidthPercent = 100 - minDescWidth;
+                } else if (newVideoWidthPercent < minVideoWidth) {
+                    newVideoWidthPercent = minVideoWidth;
+                    newDescWidthPercent = 100 - minVideoWidth;
+                }
+                
+                // Apply new widths
+                descSection.style.width = newDescWidthPercent + '%';
+                videoContainer.style.width = newVideoWidthPercent + '%';
+                
+                // Update handle position
+                resizeHandle.style.left = newDescWidthPercent + '%';
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    resizeHandle.classList.remove('resizing');
                 }
             });
             
-            // Keep button states in sync
-            if (videoToggle) {
-                videoToggle.addEventListener('click', function() {
-                    if (videoContainer.classList.contains('expanded')) {
-                        videoExpandBtn.textContent = 'Shrink video';
-                    } else {
-                        videoExpandBtn.textContent = 'Expand video';
-                    }
-                });
-            }
+            // Touch events for mobile
+            resizeHandle.addEventListener('touchstart', function(e) {
+                const touch = e.touches[0];
+                isResizing = true;
+                initialX = touch.clientX;
+                initialDescWidth = parseFloat(window.getComputedStyle(descSection).width);
+                initialVideoWidth = parseFloat(window.getComputedStyle(videoContainer).width);
+                
+                resizeHandle.classList.add('resizing');
+                e.preventDefault();
+            }, { passive: false });
+            
+            document.addEventListener('touchmove', function(e) {
+                if (!isResizing) return;
+                
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - initialX;
+                const wrapperWidth = parseFloat(window.getComputedStyle(videoWrapper).width);
+                
+                // Calculate new widths in percentage
+                let newDescWidthPercent = ((initialDescWidth + deltaX) / wrapperWidth) * 100;
+                let newVideoWidthPercent = 100 - newDescWidthPercent;
+                
+                // Apply min width constraints
+                if (newDescWidthPercent < minDescWidth) {
+                    newDescWidthPercent = minDescWidth;
+                    newVideoWidthPercent = 100 - minDescWidth;
+                } else if (newVideoWidthPercent < minVideoWidth) {
+                    newVideoWidthPercent = minVideoWidth;
+                    newDescWidthPercent = 100 - minVideoWidth;
+                }
+                
+                // Apply new widths
+                descSection.style.width = newDescWidthPercent + '%';
+                videoContainer.style.width = newVideoWidthPercent + '%';
+                
+                // Update handle position
+                resizeHandle.style.left = newDescWidthPercent + '%';
+                
+                e.preventDefault();
+            }, { passive: false });
+            
+            document.addEventListener('touchend', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    resizeHandle.classList.remove('resizing');
+                }
+            });
+            
+            // Update handle position on window resize
+            window.addEventListener('resize', updateHandlePosition);
         });
-    </script>
+        </script>
+        <!-- Additional script for the new button in the draggable div -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const videoContainer = document.getElementById('videoContainer');
+                const videoToggle = document.getElementById('videoSizeToggle');
+                const videoExpandBtn = document.getElementById('videoExpandBtn');
+                const videoWrapper = document.querySelector('.video-content-wrapper');
+                const descSection = document.querySelector('.Desc');
+                const resizeHandle = document.getElementById('sectionResizeHandle');
+                
+                // Store original sizes before expansion
+                let originalVideoWidth;
+                let originalDescWidth;
+                let originalFlexDirection;
+                
+                // Sync the expand button in dragable div with the one in video
+                videoExpandBtn.addEventListener('click', function() {
+                    expandCollapseVideo();
+                });
+                
+                // Click handler for video size toggle button if it exists
+                if (videoToggle) {
+                    videoToggle.addEventListener('click', function() {
+                        expandCollapseVideo();
+                    });
+                }
+                
+                function expandCollapseVideo() {
+                    // Toggle expanded class on video container
+                    const isExpanding = !videoContainer.classList.contains('expanded');
+                    
+                    if (isExpanding) {
+                        // EXPANDING: Store original sizes before expanding
+                        originalVideoWidth = videoContainer.style.width;
+                        originalDescWidth = descSection.style.width;
+                        originalFlexDirection = videoWrapper.style.flexDirection;
+                        
+                        // Set to expanded state
+                        videoContainer.classList.add('expanded');
+                        videoContainer.style.width = '100%';
+                        videoContainer.style.height = '100vh';
+                        descSection.style.opacity = '0';
+                        descSection.style.pointerEvents = 'none';
+                        
+                        // Hide resize handle when expanded
+                        if (resizeHandle) {
+                            resizeHandle.style.display = 'none';
+                        }
+                        
+                        // Update button text
+                        updateButtonText('Shrink Video');
+                    } else {
+                        // SHRINKING: Restore original sizes
+                        videoContainer.classList.remove('expanded');
+                        
+                        // Restore original width if we have it stored
+                        if (originalVideoWidth) {
+                            videoContainer.style.width = originalVideoWidth;
+                        }
+                        
+                        if (originalDescWidth) {
+                            descSection.style.width = originalDescWidth;
+                        }
+                        
+                        if (originalFlexDirection) {
+                            videoWrapper.style.flexDirection = originalFlexDirection;
+                        }
+                        
+                        // Show description again
+                        descSection.style.opacity = '';
+                        descSection.style.pointerEvents = '';
+                        
+                        // Show resize handle again
+                        if (resizeHandle) {
+                            resizeHandle.style.display = '';
+                        }
+                        
+                        // Update button text
+                        updateButtonText('Expand Video');
+                    }
+                    
+                    // Ensure body scrolling is not disabled
+                    document.body.style.overflow = 'auto';
+                }
+                
+                function updateButtonText(text) {
+                    // Update both buttons
+                    if (videoExpandBtn) videoExpandBtn.textContent = text;
+                    if (videoToggle) videoToggle.textContent = text;
+                }
+            });
+        </script>
 </body>
 </html> 
